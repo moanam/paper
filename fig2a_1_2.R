@@ -1,6 +1,6 @@
 # GENERATE HEATMAP & BAR PLOT OF OTU ABSOLUTE ABUNDANCE TRAJECTORIES
 # MANOSHI SEN DATTA
-# 1 NOVEMBER 2015
+# 27 OCTOBER 2016
 ########################################################################################################################
 # Required packages
 library(caTools)
