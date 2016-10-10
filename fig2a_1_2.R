@@ -15,35 +15,36 @@ map.path = paste(file.path, "map_file_all.txt", sep="")
 # tax.path = paste(file.path, "Data/16S/output/otu/bulkPartSea.otus.97.nonchimeras.labeled.rdp.cleaned.fasta", sep="")
 # abs.path = paste(file.path, "Data/Absolute_abundances/particleTrajs.txt", sep="")
 # out.path = paste(file.path, "draft/mainTextFigures/fig2/", sep="")
-source(paste(file.path, "draft/mainTextFigures/fig2/fig2_v1_functions.R", sep=""))
+source(paste(file.path, "fig2_v1_functions.R", sep=""))
 # source(paste(file.path, "draft/mainTextFigures/fig2/image.scale.2.r", sep=""))
 ########################################################################################################################
 # Read in variables from files
-dat = read.table(dat.path, header=TRUE, stringsAsFactors=FALSE)
-row.names(dat) = dat$OTUId
-dat = dat[, -1]
-map = read.table(map.path, header=FALSE, stringsAsFactors=FALSE)
-colnames(map) = c("Sample", "RevBarcode", "FwdBarcode", "SampleType", "Timepoint", "SizeFrac", "Desc")
-tax = read.table(tax.path, header=FALSE, stringsAsFactors=FALSE, sep="\t")
-colnames(tax) = c("OTU", "Taxonomy")
-abs = read.table(abs.path, header=TRUE, stringsAsFactors=FALSE)
+dat = read.table(dat.path, header=TRUE, stringsAsFactors=FALSE) #Reads in data
+row.names(dat) = dat$OTUId #Makes the row names the OTU ids
+dat = dat[, -1] #Reomoves column 1 (OTU ID)
+map = read.table(map.path, header=FALSE, stringsAsFactors=FALSE) #Reads in data
+colnames(map) = c("Sample", "RevBarcode", "FwdBarcode", "SampleType", "Timepoint", "SizeFrac", "Desc") #Changes column names from V1 etc
+# tax = read.table(tax.path, header=FALSE, stringsAsFactors=FALSE, sep="\t") #Had to comment out this bit as I was not given the data
+# colnames(tax) = c("OTU", "Taxonomy")
+# abs = read.table(abs.path, header=TRUE, stringsAsFactors=FALSE)
 
 reps = c("M1", "M2", "M3")
-times = unique(abs$Timepoint)
+# times = unique(abs$Timepoint) #Not given
 ########################################################################################################################
 # Remove OTUs that correspond to non-bacterial taxa (chloroplast, bacilliariophyta, etc.)
-OTUs2remove <- NULL
-
-for (i in 1:nrow(dat)){
-  OTU = row.names(dat)[i]
-  taxonomy = strsplit(tax[which(tax$OTU == OTU), "Taxonomy"], "|", fixed=TRUE)[[1]]
-  
-  if ("Chloroplast" %in% taxonomy){
-    OTUs2remove = c(OTUs2remove, OTU)
-  }
-}
-
-dat = dat[-which(row.names(dat) %in% OTUs2remove), ]
+# I can't run this bit as it relies on tax
+# OTUs2remove <- NULL
+# 
+# for (i in 1:nrow(dat)){
+#   OTU = row.names(dat)[i]
+#   taxonomy = strsplit(tax[which(tax$OTU == OTU), "Taxonomy"], "|", fixed=TRUE)[[1]]
+#   
+#   if ("Chloroplast" %in% taxonomy){
+#     OTUs2remove = c(OTUs2remove, OTU)
+#   }
+# }
+# 
+# dat = dat[-which(row.names(dat) %in% OTUs2remove), ]
 ########################################################################################################################
 # Separate data by replicate
 for (i in 1:length(reps)){
@@ -51,6 +52,7 @@ for (i in 1:length(reps)){
   temp = dat[, map[which(map$Desc == replicate & map$SampleType == "Particles"), "Sample"]]
   assign(paste("dat.", replicate, sep=""), temp)
 }
+#Makes a file called "temp" (temporary?) with only one replicate and then re-names it. "temp" is left with the last iteration
 ########################################################################################################################
 # Calculate relative abundance data for each replicate
 for (i in 1:length(reps)){
@@ -65,22 +67,23 @@ K = 1.270e+05
 P0 = 7.969e-04
 r = 2.102e-01
 
-total.ab.traj.med.smooth = (K * P0 * exp(r * times))/(1 + P0 * (exp(r * times)-1))
+# total.ab.traj.med.smooth = (K * P0 * exp(r * times))/(1 + P0 * (exp(r * times)-1)) # Didn't work because I don't have "times"
 ########################################################################################################################
 # Convert relative abundances to absolute abundances for each replicate
-for (i in 1:length(reps)){
-  replicate = reps[i]
-  temp.rel = get(paste("dat.", replicate, ".rel", sep=""))
-  temp.abs = rel2abs(temp.rel, total.ab.traj.med.smooth)
-  
-  assign(paste("dat.", replicate, ".abs", sep=""), temp.abs)
-}
+# Missing above
+# for (i in 1:length(reps)){
+#   replicate = reps[i]
+#   temp.rel = get(paste("dat.", replicate, ".rel", sep=""))
+#   temp.abs = rel2abs(temp.rel, total.ab.traj.med.smooth)
+#   
+#   assign(paste("dat.", replicate, ".abs", sep=""), temp.abs)
+# }
 ########################################################################################################################
 # Find top OTUs from each replicate individually (by relative abundance)
 # Include OTUs present at >1% relative abundance at any timepoint, excluding timepoints at which the total 
 # abundance was below the limit of detection for qPCR (not reliable)
 
-include_M1 = c(3:16)
+include_M1 = c(3:16) #This excludes the early time points, as explained above
 include_M2 = c(3:16)
 include_M3 = c(3:16)
 
@@ -90,31 +93,32 @@ for (i in 1:length(reps)){
   temp.rel = get(paste("dat.", replicate, ".rel", sep=""))[ , include]
   temp.subset.names = names(which(apply(temp.rel, 1, max) > 0.01))
   assign(paste(replicate, ".rel.subset.names", sep=""), temp.subset.names)
-}
+} # Makes a lift of the most abundant OTUs in each replicate
 ########################################################################################################################
-# Calculate smoothed trajectories for all OTUs
-for (i in 1:length(reps)){
-  replicate = reps[i]
-  temp.abs.subset.names = get(paste(replicate, ".rel.subset.names", sep=""))
-  temp.abs.subset = get(paste("dat.", replicate, ".abs", sep=""))
-  
-  smoothResults = medSmoothOTUs(temp.abs.subset.names, dat.M1.abs, dat.M2.abs, dat.M3.abs)
-#   smoothResults = smoothOTUs(temp.abs.subset.names, temp.abs.subset)
-  temp.abs.subset.smooth = smoothResults[[1]]
-  temp.abs.subset.smooth.norm = smoothResults[[2]]
-  
-  removeNA <- function(dat){
-    return(dat[which(is.na(apply(dat, 1, sum)) == FALSE), ])
-  }
-
-  temp.abs.subset.smooth.norm.rm = removeNA(temp.abs.subset.smooth.norm)
-  temp.abs.subset.smooth.rm = temp.abs.subset.smooth[row.names(temp.abs.subset.smooth.norm.rm), ]
-
-  temp.abs.subset.smooth.rm.ordered = temp.abs.subset.smooth.rm[rev(order(apply(temp.abs.subset.smooth.rm, 1, calc_COM))), ]
-  temp.abs.subset.smooth.norm.rm.ordered = temp.abs.subset.smooth.norm.rm[rev(order(apply(temp.abs.subset.smooth.norm.rm, 1, calc_COM))), ]
-  
-  assign(paste(replicate, ".abs.subset.smooth.norm.ordered.rm", sep=""), temp.abs.subset.smooth.norm.rm.ordered)
-}
+# # Calculate smoothed trajectories for all OTUs
+# Didn't work due to not having some data
+# for (i in 1:length(reps)){
+#   replicate = reps[i]
+#   temp.abs.subset.names = get(paste(replicate, ".rel.subset.names", sep=""))
+#   temp.abs.subset = get(paste("dat.", replicate, ".abs", sep=""))
+#   
+#   smoothResults = medSmoothOTUs(temp.abs.subset.names, dat.M1.abs, dat.M2.abs, dat.M3.abs)
+# #   smoothResults = smoothOTUs(temp.abs.subset.names, temp.abs.subset)
+#   temp.abs.subset.smooth = smoothResults[[1]]
+#   temp.abs.subset.smooth.norm = smoothResults[[2]]
+#   
+#   removeNA <- function(dat){
+#     return(dat[which(is.na(apply(dat, 1, sum)) == FALSE), ])
+#   }
+# 
+#   temp.abs.subset.smooth.norm.rm = removeNA(temp.abs.subset.smooth.norm)
+#   temp.abs.subset.smooth.rm = temp.abs.subset.smooth[row.names(temp.abs.subset.smooth.norm.rm), ]
+# 
+#   temp.abs.subset.smooth.rm.ordered = temp.abs.subset.smooth.rm[rev(order(apply(temp.abs.subset.smooth.rm, 1, calc_COM))), ]
+#   temp.abs.subset.smooth.norm.rm.ordered = temp.abs.subset.smooth.norm.rm[rev(order(apply(temp.abs.subset.smooth.norm.rm, 1, calc_COM))), ]
+#   
+#   assign(paste(replicate, ".abs.subset.smooth.norm.ordered.rm", sep=""), temp.abs.subset.smooth.norm.rm.ordered)
+# }
 ########################################################################################################################
 # Plot heatmap
 ncolors=599
