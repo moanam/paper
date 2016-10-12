@@ -12,7 +12,10 @@ fig_width: 7
 ###Calculation of mean, SE, SD and CI from phyloseq processed data and plotting as bubble plot
 
 #####Code is intended for use with melted datasets from phyloseq. It should work or any other data.frame but this example uses a processed phyloseq dataset. Data used here is found in the folder.
-  
+```{r load libraries}
+library(knitr)
+```
+
 ```{r global_options, echo=FALSE, results='hide'}
 knitr::opts_chunk$set(fig.width=12, fig.height=8, fig.align='center', results='hide', echo=TRUE, warning=FALSE, message=FALSE)
 ```
