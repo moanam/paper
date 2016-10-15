@@ -21,7 +21,7 @@ knitr::opts_chunk$set(fig.width=12, fig.height=8, fig.align='center', results='h
 ```
 
 ```{r Load melted data.frame}
-Fs <- read.csv("/Users/sergiomorales/Documents/NZResearch/R_Code/Line_graphs_w_errorbars/FINALshort.csv",fill = TRUE, header = TRUE, sep = ",")
+Fs <- read.csv("C:/Users/Moana/Documents/Uni/2016/Publication/FINALshort.csv",fill = TRUE, header = TRUE, sep = ",")
 ```
 
 ```{r Summarize data and calcuate SE SD CI mean}
@@ -46,5 +46,5 @@ ggplot(tgc, aes(x=Day, y=OTU, colour=Phylum, group=Treatment)) +
 ```
 
 ```{r save plot}
-ggsave("/Users/sergiomorales/Downloads/p.pdf",width=8,height=12)
+ggsave("C:/Users/Moana/Documents/Uni/2016/Publication/p.pdf",width=8,height=12)
 ```
