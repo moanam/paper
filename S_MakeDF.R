@@ -222,7 +222,7 @@ TT = TT[, which(apply(!apply(TT, 2, is.na), 2, any))]
 tdf = data.frame(TT, OTU = taxa_names(Exp1_phyloseq)) #attaches OTUs to data frame
 pOTUtax = merge(pooledOTUtable, tdf, by.x = "OTU")
 pOTU = data.frame(pOTUtax,SeqTotal = rowSums(pOTUtax[,2:85])) #numbers show in which columns treatment data is located
-pOTU.phylum =pOTU[,c(2:85,1)] #need to change this and the above numbers manually. The 6 refers to the column of taxonomy data
+pOTU.phylum =pOTU[,c(2:85,1)] #need to change this and the above numbers manually. The 1 refers to the column of taxonomy data
 melt.phylum = melt(pOTU.phylum,id.vars="OTU") #melt all the OTUs that are one particular thing into a rank. Still has many observations for each OTU in each water mass
 colnames(melt.phylum)[2]="SampleID"
 agg.phylum=aggregate(.~OTU+SampleID,melt.phylum,sum) #Turns it into percentages
@@ -251,6 +251,12 @@ NewDF2$BP <- NULL
 NewDF2 <- na.omit(NewDF2)
 
 #write.csv(NewDF2, file = "C://Users//Moana//Documents//Uni//2015//ECOL491//All data//data//S_OTUMetadataLayout2.csv")
+
+Fulltax=pOTU[,c(86:92,1)]#Isolate the taxonomy data
+#Fulltax2=unique(Fulltax)#Seems to be unnesessary
+NewDF3 <- merge(NewDF2, Fulltax, by="OTU", all.x=TRUE, all.y=TRUE)
+#write.csv(NewDF3, file = "C:/Users/Moana/Documents/Uni/2016/Publication/paper/S_OTUMetadataLayout2.csv")
+
 
 ```
 
