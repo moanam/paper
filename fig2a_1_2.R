@@ -12,9 +12,9 @@ require(gridExtra)
 file.path = "C:/Users/Moana/Documents/Uni/2016/Publication/"
 dat.path = paste(file.path, "bulkPartSea.otus.97.otu_table.headers.txt", sep="")
 map.path = paste(file.path, "map_file_all.txt", sep="")
-# tax.path = paste(file.path, "Data/16S/output/otu/bulkPartSea.otus.97.nonchimeras.labeled.rdp.cleaned.fasta", sep="")
+tax.path = paste(file.path, "Fasta file/outseqs_by_sample_Moana.fasta", sep="")
 # abs.path = paste(file.path, "Data/Absolute_abundances/particleTrajs.txt", sep="")
-# out.path = paste(file.path, "draft/mainTextFigures/fig2/", sep="")
+out.path = paste(file.path, "Output/", sep="")
 source(paste(file.path, "fig2_v1_functions.R", sep=""))
 # source(paste(file.path, "draft/mainTextFigures/fig2/image.scale.2.r", sep=""))
 ########################################################################################################################
