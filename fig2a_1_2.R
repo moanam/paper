@@ -24,8 +24,8 @@ row.names(dat) = dat$OTUId #Makes the row names the OTU ids
 dat = dat[, -1] #Reomoves column 1 (OTU ID)
 map = read.table(map.path, header=FALSE, stringsAsFactors=FALSE) #Reads in data
 colnames(map) = c("Sample", "RevBarcode", "FwdBarcode", "SampleType", "Timepoint", "SizeFrac", "Desc") #Changes column names from V1 etc
-# tax = read.table(tax.path, header=FALSE, stringsAsFactors=FALSE, sep="\t") #Had to comment out this bit as I was not given the data
-# colnames(tax) = c("OTU", "Taxonomy")
+tax = read.table(tax.path, header=FALSE, stringsAsFactors=FALSE, sep="\t") #Had to comment out this bit as I was not given the data
+# colnames(tax) = c("OTU", "Taxonomy") #Here it didn't work. My file has the barcodes, I suppose it is meant to have one column with the OTU and one with the XXXX. I will try to use my data file for this.
 # abs = read.table(abs.path, header=TRUE, stringsAsFactors=FALSE)
 
 reps = c("M1", "M2", "M3")
