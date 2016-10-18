@@ -255,7 +255,7 @@ NewDF2 <- na.omit(NewDF2)
 Fulltax=pOTU[,c(86:92,1)]#Isolate the taxonomy data
 #Fulltax2=unique(Fulltax)#Seems to be unnesessary
 NewDF3 <- merge(NewDF2, Fulltax, by="OTU", all.x=TRUE, all.y=TRUE)
-#write.csv(NewDF3, file = "C:/Users/Moana/Documents/Uni/2016/Publication/paper/S_OTUMetadataLayout2.csv")
+#write.csv(NewDF3, file = "C:/Users/Moana/Documents/Uni/2016/Publication/paper/S_Fulltaxonomy.csv")
 
 
 ```
