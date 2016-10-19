@@ -60,6 +60,7 @@ for (i in 1:length(reps)){
   assign(paste("dat.", replicate, sep=""), temp)
 }
 #Makes a file called "temp" (temporary?) with only one replicate and then re-names it. "temp" is left with the last iteration
+#Stopped working because my map file doesn't have particels?
 ########################################################################################################################
 # Calculate relative abundance data for each replicate
 for (i in 1:length(reps)){
