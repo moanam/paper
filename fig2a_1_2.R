@@ -36,7 +36,7 @@ tax = tax[,c(2,35)]
 colnames(tax) = c("OTU", "Taxonomy")
 ########################################################################################################################
 # Remove OTUs that correspond to non-bacterial taxa (chloroplast, bacilliariophyta, etc.)
-# I can't run this bit as it relies on tax
+# I'm gonna ignore this bit as I deleted that information (it's not in "Taxonomy". Maybe I need to keep the chloroplast column and adapt this?)
 OTUs2remove <- NULL
 
 for (i in 1:nrow(dat)){
