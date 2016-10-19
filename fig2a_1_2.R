@@ -24,27 +24,31 @@ row.names(dat) = dat$OTUId #Makes the row names the OTU ids
 dat = dat[, -1] #Reomoves column 1 (OTU ID)
 map = read.table(map.path, header=FALSE, stringsAsFactors=FALSE) #Reads in data
 colnames(map) = c("Sample", "RevBarcode", "FwdBarcode", "SampleType", "Timepoint", "SizeFrac", "Desc") #Changes column names from V1 etc
-tax = read.table(tax.path, header=FALSE, stringsAsFactors=FALSE, sep="\t") #Had to comment out this bit as I was not given the data
-# colnames(tax) = c("OTU", "Taxonomy") #Here it didn't work. My file has the barcodes, I suppose it is meant to have one column with the OTU and one with the XXXX. I will try to use my data file for this.
+#tax = read.table(tax.path, header=FALSE, stringsAsFactors=FALSE, sep="\t") #Had to comment out this bit as my data doesn't work
+# colnames(tax) = c("OTU", "Taxonomy") #Here it didn't work. My file has the barcodes, I suppose it is meant to have one column with the OTU and one with the Order. I will try to use my data file for this.
 # abs = read.table(abs.path, header=TRUE, stringsAsFactors=FALSE)
 
 reps = c("M1", "M2", "M3")
 # times = unique(abs$Timepoint) #Not given
+
+tax = read.csv("C:/Users/Moana/Documents/Uni/2016/Publication/paper/Fulltaxonomy.csv", header = T)
+tax = tax[,c(2,35)]
+colnames(tax) = c("OTU", "Taxonomy")
 ########################################################################################################################
 # Remove OTUs that correspond to non-bacterial taxa (chloroplast, bacilliariophyta, etc.)
 # I can't run this bit as it relies on tax
-# OTUs2remove <- NULL
-# 
-# for (i in 1:nrow(dat)){
-#   OTU = row.names(dat)[i]
-#   taxonomy = strsplit(tax[which(tax$OTU == OTU), "Taxonomy"], "|", fixed=TRUE)[[1]]
-#   
-#   if ("Chloroplast" %in% taxonomy){
-#     OTUs2remove = c(OTUs2remove, OTU)
-#   }
-# }
-# 
-# dat = dat[-which(row.names(dat) %in% OTUs2remove), ]
+OTUs2remove <- NULL
+
+for (i in 1:nrow(dat)){
+  OTU = row.names(dat)[i]
+  taxonomy = strsplit(tax[which(tax$OTU == OTU), "Taxonomy"], "|", fixed=TRUE)[[1]]
+  
+  if ("Chloroplast" %in% taxonomy){
+    OTUs2remove = c(OTUs2remove, OTU)
+  }
+}
+
+dat = dat[-which(row.names(dat) %in% OTUs2remove), ]
 ########################################################################################################################
 # Separate data by replicate
 for (i in 1:length(reps)){
