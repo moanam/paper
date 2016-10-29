@@ -240,7 +240,7 @@ NewDF$BA <- NULL
 NewDF$BP <- NULL
 NewDF <- na.omit(NewDF)
 
-#write.csv(NewDF, file = "C://Users//Moana//Documents//Uni//2015//ECOL491//All data//data//S_OTUMetadata.csv")
+#write.csv(NewDF, file = "C://Users//Moana//Documents//Uni//2015//ECOL491//All data//data//S_OTUMetadata.csv", row.names=FALSE)
 
 
 PhylumCount2 = agg.phylum
@@ -250,12 +250,12 @@ NewDF2$BA <- NULL
 NewDF2$BP <- NULL
 NewDF2 <- na.omit(NewDF2)
 
-#write.csv(NewDF2, file = "C://Users//Moana//Documents//Uni//2015//ECOL491//All data//data//S_OTUMetadataLayout2.csv")
+#write.csv(NewDF2, file = "C://Users//Moana//Documents//Uni//2015//ECOL491//All data//data//S_OTUMetadataLayout2.csv", row.names=FALSE)
 
 Fulltax=pOTU[,c(95:101,1)]#Isolate the taxonomy data
 #Fulltax2=unique(Fulltax)#Seems to be unnesessary
 NewDF3 <- merge(NewDF2, Fulltax, by="OTU", all.x=TRUE, all.y=TRUE)
-#write.csv(NewDF3, file = "C:/Users/Moana/Documents/Uni/2016/Publication/paper/Fulltaxonomy.csv")
+#write.csv(NewDF3, file = "C:/Users/Moana/Documents/Uni/2016/Publication/paper/Fulltaxonomy.csv", row.names=FALSE)
 
 
 ```
