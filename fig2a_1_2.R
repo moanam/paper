@@ -31,12 +31,6 @@ colnames(map) = c("Sample", "RevBarcode", "FwdBarcode", "SampleType", "Timepoint
 reps = c("M1", "M2", "M3")
 # times = unique(abs$Timepoint) #Not given
 
-mydata = read.csv("C:/Users/Moana/Documents/Uni/2016/Publication/paper/Fulltaxonomy.csv", header = T)
-tax = mydata[,c(2,35)]
-colnames(tax) = c("OTU", "Taxonomy")
-
-map = mydata[,c(3,15,16,13)]
-
 ########################################################################################################################
 # Remove OTUs that correspond to non-bacterial taxa (chloroplast, bacilliariophyta, etc.)
 # I'm gonna ignore this bit as I deleted that information (it's not in "Taxonomy". Maybe I need to keep the chloroplast column and adapt this?)
