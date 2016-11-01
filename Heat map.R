@@ -27,11 +27,15 @@ dat.M2 = subset(mydata, Replicate == "B")
 
 
 dat.M1 = dat.M1[,c(1,3,12)]
+dat.M2 = dat.M2[,c(1,3,12)]
 
 ####This sums the OTU abundances from different water masses from the same time
 library(dplyr)
 df <- group_by(dat.M1, OTU, Time)
-df.summary <- summarise(df, Abundance = sum(value))
+dat.M1 <- summarise(df, Abundance = sum(value))
+
+df <- group_by(dat.M2, OTU, Time)
+dat.M2 <- summarise(df, Abundance = sum(value))
 
 ###################################################
 
