@@ -51,3 +51,16 @@ dat.M2 <- data.frame(dat.M2[,-1], row.names=dat.M2[,1])
 #Change column names
 colnames(dat.M1) <- c("M1.0","M1.126", "M1.182", "M1.325", "M1.406", "M1.448")
 colnames(dat.M2) <- c("M2.0","M2.126", "M2.182", "M2.325", "M2.406", "M2.448")
+
+############################################
+
+reps = c("M1", "M2")
+
+# Calculate relative abundance data for each replicate
+for (i in 1:length(reps)){
+  replicate = reps[i]
+  temp = get(paste("dat.", replicate, sep=""))
+  temp.rel = count2rel(temp)
+  assign(paste("dat.", replicate, ".rel", sep=""), temp.rel)
+}
+
