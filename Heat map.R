@@ -47,3 +47,7 @@ dat.M2 = dcast(dat.M2, OTU ~ Time)
 #Make OTU row names
 dat.M1 <- data.frame(dat.M1[,-1], row.names=dat.M1[,1])
 dat.M2 <- data.frame(dat.M2[,-1], row.names=dat.M2[,1])
+
+#Change column names
+colnames(dat.M1) <- c("M1.0","M1.126", "M1.182", "M1.325", "M1.406", "M1.448")
+colnames(dat.M2) <- c("M2.0","M2.126", "M2.182", "M2.325", "M2.406", "M2.448")
