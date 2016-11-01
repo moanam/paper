@@ -141,7 +141,7 @@ normAbsAbund <- function(tab){
 }
 ####################################################################################################
 # Calculate median, smoothed trajectories for all OTUs
-medSmoothOTUs <- function(OTU.names, dat.M1.abs, dat.M2.abs, dat.M3.abs){
+medSmoothOTUs <- function(OTU.names, dat.M1.abs, dat.M2.abs){
   dat.OTUs.abs.med.smooth.norm <- NULL
   dat.OTUs.abs.med.smooth <- NULL
   
