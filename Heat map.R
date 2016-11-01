@@ -199,8 +199,8 @@ for (i in 1:length(reps)){
   image(x=times, y=seq(1:length(row.names(mat2plot))), z=as.matrix(t(mat2plot)),
         col=scaleblackorangered, breaks=col_breaks,
         xaxt='n', yaxt="n", xlab="", ylab="")
-  axis(1, at=seq(0,144,by=24), cex.axis=3)
-  mtext(text="Colonization time (hours)", side=1, line=6, outer=FALSE, cex=4, font=2)
+  axis(1, at=seq(0,448,by=64), cex.axis=3)
+  mtext(text="Time (days since 28 Jan 2014)", side=1, line=6, outer=FALSE, cex=4, font=2)
   
   legend(x=-84, y=49.5, legendOrder, fill=colorScheme, 
          bty='o', box.lwd=2, xpd=NA, cex=2, title=expression(bold("Orders")))
