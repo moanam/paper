@@ -29,25 +29,10 @@ dat.M2 = subset(mydata, Replicate == "B")
 dat.M1 = dat.M1[,c(1,3,12)]
 
 ####This sums the OTU abundances from different water masses from the same time
-
 library(dplyr)
-
 df <- group_by(dat.M1, OTU, Time)
-
 df.summary <- summarise(df, Abundance = sum(value))
 
-library(dplyr)
-res <- dat.M1 %>%
-  group_by(OTU, Time) %>% 
-  mutate(value=sum(value))
-dat.M3 = as.data.frame(res)
-
-dat.M4 = aggregate(OTU ~ Time, data=dat.M1, sum)
-
-dat.M4 = aggregate(dat.M1, OTU)
-
-
-
-head(dat.M1)
+###################################################
 
 dat.M3 <- data.frame(dat.M1[,-1], row.names=dat.M1[,1]) #This is currently producing duplicate row names as I have each OTU for each time point
