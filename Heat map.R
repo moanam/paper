@@ -210,7 +210,7 @@ for (i in 1:length(reps)){
   axis(1, at=seq(0,448,by=64), cex.axis=3)
   mtext(text="Time (days since 28 Jan 2014)", side=1, line=6, outer=FALSE, cex=4, font=2)
   
-  legend(x=-84, y=49.5, legendOrder, fill=colorScheme, 
+  legend(x=-330, y=49.5, legendOrder, fill=colorScheme, 
          bty='o', box.lwd=2, xpd=NA, cex=2, title=expression(bold("Orders")))
   dev.off()
   
