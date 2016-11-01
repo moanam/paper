@@ -65,7 +65,28 @@ for (i in 1:length(reps)){
 }
 
 ############################################
-#Skipped lines 62-77
+#Lines 62-77
+
+########################################################################################################################
+#times = unique(abs$Timepoint)
+times = c(0,126, 182, 325, 406, 448)
+
+# Calculate smoothed total abundance trajectory
+K = 1.270e+05
+P0 = 7.969e-04
+r = 2.102e-01
+
+total.ab.traj.med.smooth = (K * P0 * exp(r * times))/(1 + P0 * (exp(r * times)-1))
+########################################################################################################################
+# Convert relative abundances to absolute abundances for each replicate
+for (i in 1:length(reps)){
+  replicate = reps[i]
+  temp.rel = get(paste("dat.", replicate, ".rel", sep=""))
+  temp.abs = rel2abs(temp.rel, total.ab.traj.med.smooth)
+  
+  assign(paste("dat.", replicate, ".abs", sep=""), temp.abs)
+}
+
 ##############################################
 
 # Find top OTUs from each replicate individually (by relative abundance)
@@ -89,7 +110,7 @@ for (i in 1:length(reps)){
   temp.abs.subset.names = get(paste(replicate, ".rel.subset.names", sep=""))
   temp.abs.subset = get(paste("dat.", replicate, ".abs", sep=""))
   
-  smoothResults = medSmoothOTUs(temp.abs.subset.names, dat.M1.abs, dat.M2.abs, dat.M3.abs)
+  smoothResults = medSmoothOTUs(temp.abs.subset.names, dat.M1.abs, dat.M2.abs)
   #   smoothResults = smoothOTUs(temp.abs.subset.names, temp.abs.subset)
   temp.abs.subset.smooth = smoothResults[[1]]
   temp.abs.subset.smooth.norm = smoothResults[[2]]
