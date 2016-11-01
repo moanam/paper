@@ -38,5 +38,12 @@ df <- group_by(dat.M2, OTU, Time)
 dat.M2 <- summarise(df, Abundance = sum(value))
 
 ###################################################
+#rearrange to make times columns
+library(reshape2)
+dat.M1 = dcast(dat.M1, OTU ~ Time) #Rearrages so that each time has a column
+dat.M2 = dcast(dat.M2, OTU ~ Time)
 
-dat.M3 <- data.frame(dat.M1[,-1], row.names=dat.M1[,1]) #This is currently producing duplicate row names as I have each OTU for each time point
+##########################
+#Make OTU row names
+dat.M1 <- data.frame(dat.M1[,-1], row.names=dat.M1[,1])
+dat.M2 <- data.frame(dat.M2[,-1], row.names=dat.M2[,1])
