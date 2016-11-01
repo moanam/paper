@@ -152,7 +152,7 @@ for (i in 1:length(reps)){
   col_breaks = c(seq(min(mat2plot, na.rm=TRUE), max(mat2plot, na.rm=TRUE), length=600))
   
   # Prepare for plotting taxonomic distinctions
-  tax$Taxonomy <- as.character(tax$Taxonomy)
+#  tax$Taxonomy <- as.character(tax$Taxonomy)
   famNames = unlist(lapply(row.names(mat2plot), function(OTU) strsplit(tax[which(tax$OTU == OTU), "Taxonomy"], "|", fixed=TRUE)[[1]][4]))
   famNames = unlist(lapply(famNames, function(fam) ifelse((is.na(fam) | fam == "unclassified"), yes="UATL", no=fam)))
   famNames.collapsed = as.factor(famNames)
