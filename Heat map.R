@@ -64,3 +64,20 @@ for (i in 1:length(reps)){
   assign(paste("dat.", replicate, ".rel", sep=""), temp.rel)
 }
 
+############################################
+#Skipped lines 62-77
+##############################################
+
+# Find top OTUs from each replicate individually (by relative abundance)
+# Include OTUs present at >1% relative abundance at any timepoint
+
+include_M1 = c(1:6)
+include_M2 = c(1:6)
+
+for (i in 1:length(reps)){
+  replicate = reps[i]
+  include = get(paste("include_", replicate, sep=""))
+  temp.rel = get(paste("dat.", replicate, ".rel", sep=""))[ , include]
+  temp.subset.names = names(which(apply(temp.rel, 1, max) > 0.01))
+  assign(paste(replicate, ".rel.subset.names", sep=""), temp.subset.names)
+}
