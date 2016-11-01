@@ -14,7 +14,7 @@ out.path = paste(file.path, "Output/", sep="")
 source(paste(file.path, "paper/fig2_v1_functions.R", sep=""))
 
 mydata = read.csv("C:/Users/Moana/Documents/Uni/2016/Publication/paper/Fulltaxonomy.csv", header = T)
-tax = mydata[,c(2,35)]
+tax = mydata[,c(1,34)]
 colnames(tax) = c("OTU", "Taxonomy")
 
 map = mydata[,c(3,15,16,13)]
@@ -139,6 +139,7 @@ for (i in 1:length(reps)){
   col_breaks = c(seq(min(mat2plot, na.rm=TRUE), max(mat2plot, na.rm=TRUE), length=600))
   
   # Prepare for plotting taxonomic distinctions
+  tax$Taxonomy <- as.character(tax$Taxonomy)
   famNames = unlist(lapply(row.names(mat2plot), function(OTU) strsplit(tax[which(tax$OTU == OTU), "Taxonomy"], "|", fixed=TRUE)[[1]][4]))
   famNames = unlist(lapply(famNames, function(fam) ifelse((is.na(fam) | fam == "unclassified"), yes="UATL", no=fam)))
   famNames.collapsed = as.factor(famNames)
