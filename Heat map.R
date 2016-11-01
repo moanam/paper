@@ -128,6 +128,11 @@ for (i in 1:length(reps)){
   assign(paste(replicate, ".abs.subset.smooth.norm.ordered.rm", sep=""), temp.abs.subset.smooth.norm.rm.ordered)
 }
 ########################################################################################################################
+library(devtools)
+source_url('https://gist.github.com/menugget/7689145/raw/dac746aa322ca4160a5fe66c70fec16ebe26faf9/image.scale.2.r')
+#image.scale function
+
+################
 # Plot heatmap
 ncolors=599
 scaleblackorangered <- colorRampPalette(c("black", "orange", "orangered","red"))(n=ncolors)
