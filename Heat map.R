@@ -17,6 +17,14 @@ mydata = read.csv("C:/Users/Moana/Documents/Uni/2016/Publication/paper/Fulltaxon
 tax = mydata[,c(1,34)]
 colnames(tax) = c("OTU", "Taxonomy")
 
+library(splitstackshape)
+
+tax = cSplit(tax, 'Taxonomy', sep="_", type.convert=FALSE)
+tax$Taxonomy_1 <- NULL
+tax$Taxonomy_2 <- NULL
+tax$Taxonomy_3 <- NULL
+names(tax)[names(tax)=="Taxonomy_4"] <- "Taxonomy"
+
 map = mydata[,c(3,15,16,13)]
 colnames(map) = c("Sample", "RevBarcode", "FwdBarcode", "Timepoint")
 
