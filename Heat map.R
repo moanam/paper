@@ -72,32 +72,16 @@ for (i in 1:length(reps)){
   assign(paste("dat.", replicate, ".rel", sep=""), temp.rel)
 }
 
-############################################
-#Lines 62-77
-
 ########################################################################################################################
-#times = unique(abs$Timepoint)
+
 times = c(0,126, 182, 325, 406, 448)
-# 
-# # Calculate smoothed total abundance trajectory
-# K = 1.270e+05
-# P0 = 7.969e-04
-# r = 2.102e-01
-# 
-# total.ab.traj.med.smooth = (K * P0 * exp(r * times))/(1 + P0 * (exp(r * times)-1))
+
 # ########################################################################################################################
 # Convert relative abundances to absolute abundances for each replicate
-# for (i in 1:length(reps)){
-#   replicate = reps[i]
-#   temp.rel = get(paste("dat.", replicate, ".rel", sep=""))
-#   temp.abs = rel2abs(temp.rel, total.ab.traj.med.smooth)
-#   
-#   assign(paste("dat.", replicate, ".abs", sep=""), temp.abs)
-# }
-
 #Workaround to just name what we had "absolute abundances", because I'm not using the trajectory
 dat.M1.abs=dat.M1
 dat.M2.abs=dat.M2
+
 ##############################################
 
 # Find top OTUs from each replicate individually (by relative abundance)
@@ -152,9 +136,6 @@ OTUnames = subset(OTUs_in_fig, select=c("rn")) #Isolate the OTUs. But OTUS also 
 
 OTUnames$Taxonomy <- tax$Taxonomy[match(OTUnames$rn,tax$OTU)]
 
-##############!!!!!!!!!!!!!!!!!!!!!!!!!!!#########################!!!!!!!!!!!!!!!!!!!!
-#Now: Work out how to add the matching Taxonomy from tax to OTUnames, in the order of OTUnames. Make THIS new thing famNames
-
 ################
 # Plot heatmap
 ncolors=599
@@ -167,10 +148,7 @@ for (i in 1:length(reps)){
   col_breaks = c(seq(min(mat2plot, na.rm=TRUE), max(mat2plot, na.rm=TRUE), length=600))
   
   # Prepare for plotting taxonomic distinctions
-#  tax$Taxonomy <- as.character(tax$Taxonomy)
-  #famNames = unlist(lapply(row.names(mat2plot), function(OTU) strsplit(tax[which(tax$OTU == OTU), "Taxonomy"], "|", fixed=TRUE)[[1]][4]))
-  famNames <- OTUnames[['Taxonomy']] #This takes all the taxonomy. I think mat2plot has the OTUs in my figure
-  
+  famNames <- OTUnames[['Taxonomy']]
   famNames = unlist(lapply(famNames, function(fam) ifelse((is.na(fam) | fam == "unclassified"), yes="UATL", no=fam)))
   famNames.collapsed = as.factor(famNames)
   levels(famNames.collapsed) = c(levels(famNames.collapsed), "Other")
