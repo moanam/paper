@@ -78,23 +78,26 @@ for (i in 1:length(reps)){
 ########################################################################################################################
 #times = unique(abs$Timepoint)
 times = c(0,126, 182, 325, 406, 448)
-
-# Calculate smoothed total abundance trajectory
-K = 1.270e+05
-P0 = 7.969e-04
-r = 2.102e-01
-
-total.ab.traj.med.smooth = (K * P0 * exp(r * times))/(1 + P0 * (exp(r * times)-1))
-########################################################################################################################
+# 
+# # Calculate smoothed total abundance trajectory
+# K = 1.270e+05
+# P0 = 7.969e-04
+# r = 2.102e-01
+# 
+# total.ab.traj.med.smooth = (K * P0 * exp(r * times))/(1 + P0 * (exp(r * times)-1))
+# ########################################################################################################################
 # Convert relative abundances to absolute abundances for each replicate
-for (i in 1:length(reps)){
-  replicate = reps[i]
-  temp.rel = get(paste("dat.", replicate, ".rel", sep=""))
-  temp.abs = rel2abs(temp.rel, total.ab.traj.med.smooth)
-  
-  assign(paste("dat.", replicate, ".abs", sep=""), temp.abs)
-}
+# for (i in 1:length(reps)){
+#   replicate = reps[i]
+#   temp.rel = get(paste("dat.", replicate, ".rel", sep=""))
+#   temp.abs = rel2abs(temp.rel, total.ab.traj.med.smooth)
+#   
+#   assign(paste("dat.", replicate, ".abs", sep=""), temp.abs)
+# }
 
+#Workaround to just name what we had "absolute abundances", because I'm not using the trajectory
+dat.M1.abs=dat.M1
+dat.M2.abs=dat.M2
 ##############################################
 
 # Find top OTUs from each replicate individually (by relative abundance)
