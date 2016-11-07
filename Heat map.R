@@ -141,6 +141,15 @@ source_url('https://gist.github.com/menugget/7689145/raw/dac746aa322ca4160a5fe66
 #image.scale function
 
 ################
+#Heatmap taxonomy
+library(data.table)
+OTUs_in_fig = setDT(mat2plot, keep.rownames = TRUE)[] #Makes what I think are the oTUs a column
+OTUnames = subset(OTUs_in_fig, select=c("rn")) #Isolate the OTUs. But OTUS also gives this!
+
+##############!!!!!!!!!!!!!!!!!!!!!!!!!!!#########################!!!!!!!!!!!!!!!!!!!!
+#Now: Work out how to add the matching Taxonomy from tax to OTUnames, in the order of OTUnames. Make THIS new thing famNames
+
+################
 # Plot heatmap
 ncolors=599
 scaleblackorangered <- colorRampPalette(c("black", "orange", "orangered","red"))(n=ncolors)
@@ -155,13 +164,6 @@ for (i in 1:length(reps)){
 #  tax$Taxonomy <- as.character(tax$Taxonomy)
   #famNames = unlist(lapply(row.names(mat2plot), function(OTU) strsplit(tax[which(tax$OTU == OTU), "Taxonomy"], "|", fixed=TRUE)[[1]][4]))
   famNames <- tax[['Taxonomy']] #This takes all the taxonomy. I think mat2plot has the OTUs in my figure
-  
-#   library(data.table)
-#   OTUs_in_fig = setDT(mat2plot, keep.rownames = TRUE)[] #Makes what I think are the oTUs a column
-#   OTUnames = subset(OTUs_in_fig, select=c("rn")) #Isolate the OTUs. But OTUS also gives this!
-#   
-  ##############!!!!!!!!!!!!!!!!!!!!!!!!!!!#########################!!!!!!!!!!!!!!!!!!!!
-  #Now: Work out how to add the matching Taxonomy from tax to OTUnames, in the order of OTUnames. Make THIS new thing famNames
   
   famNames = unlist(lapply(famNames, function(fam) ifelse((is.na(fam) | fam == "unclassified"), yes="UATL", no=fam)))
   famNames.collapsed = as.factor(famNames)
