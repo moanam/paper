@@ -152,7 +152,8 @@ for (i in 1:length(reps)){
   famNames = unlist(lapply(famNames, function(fam) ifelse((is.na(fam) | fam == "unclassified"), yes="UATL", no=fam)))
   famNames.collapsed = as.factor(famNames)
   levels(famNames.collapsed) = c(levels(famNames.collapsed), "Other")
-  famNamesToKeep = c('Alteromonadales','Flavobacteriales','Oceanospirillales','Sphingobacteriales','Vibrionales','Rhodobacterales')
+  #famNamesToKeep = c('Alteromonadales','Flavobacteriales','Oceanospirillales','Sphingobacteriales','Vibrionales','Rhodobacterales')
+  famNamesToKeep = c("Flavobacteriales", "Rhodobacterales", "Oceanospirillales", "Alteromonadales", "Rhodospirillales", "SAR11 clade", "Other")
   
   famNames.collapsed[!(famNames.collapsed %in% famNamesToKeep)] = "Other"
   famNames.collapsed = factor(famNames.collapsed) # clean up unused levels  
@@ -185,7 +186,8 @@ for (i in 1:length(reps)){
   # Plot heat map
   pdf(file=paste(out.path, "fig2a_", replicate, "_heatmap.pdf", sep=""), height=20, width=14.2)
   colorScheme = c("slategrey", "#a6cee3", "#1f78b4", "mediumpurple1", "#b2df8a", "#33a02c", "black")
-  legendOrder = c("Vibrionales", "Alteromonadales", "Oceanospirillales", "Rhodobacterales", "Flavobacteriales", "Sphingobacteriales", "Other")
+  legendOrder = c("Flavobacteriales", "Rhodobacterales", "Oceanospirillales", "Alteromonadales", "Rhodospirillales", "SAR11 clade", "Other")
+  #legendOrder = c("Vibrionales", "Alteromonadales", "Oceanospirillales", "Rhodobacterales", "Flavobacteriales", "Sphingobacteriales", "Other")
   
   temp = data.frame(cbind(legendOrder, colorScheme))
   row.names(temp) = temp$legendOrder
