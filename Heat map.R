@@ -25,7 +25,7 @@ tax$Taxonomy_2 <- NULL
 tax$Taxonomy_3 <- NULL
 names(tax)[names(tax)=="Taxonomy_4"] <- "Taxonomy"
 
-map = mydata[,c(3,15,16,13)]
+map = mydata[,c(3,15,16,12)]
 colnames(map) = c("Sample", "RevBarcode", "FwdBarcode", "Timepoint")
 
 ########################################################################################################################
@@ -94,7 +94,7 @@ for (i in 1:length(reps)){
   replicate = reps[i]
   include = get(paste("include_", replicate, sep=""))
   temp.rel = get(paste("dat.", replicate, ".rel", sep=""))[ , include]
-  temp.subset.names = names(which(apply(temp.rel, 1, max) > 0.01))
+  temp.subset.names = names(which(apply(temp.rel, 1, max) > 0.00))
   assign(paste(replicate, ".rel.subset.names", sep=""), temp.subset.names)
 }
 
@@ -102,10 +102,10 @@ for (i in 1:length(reps)){
 # Calculate smoothed trajectories for all OTUs
 for (i in 1:length(reps)){
   replicate = reps[i]
-  temp.abs.subset.names = get(paste(replicate, ".rel.subset.names", sep=""))
-  temp.abs.subset = get(paste("dat.", replicate, ".abs", sep=""))
+  temp.abs.subset.names = get(paste(replicate, ".rel.subset.names", sep="")) #Names of all the oTUs (I think)
+  temp.abs.subset = get(paste("dat.", replicate, ".abs", sep="")) #OTUs and abundances (table)
   
-  smoothResults = medSmoothOTUs(temp.abs.subset.names, dat.M1.abs, dat.M2.abs)
+  smoothResults = medSmoothOTUs(temp.abs.subset.names, dat.M1.abs, dat.M2.abs) #medSmoothOTUs is Manoshi's function to calculate median, smoothed trajectories for all OTUs
   #   smoothResults = smoothOTUs(temp.abs.subset.names, temp.abs.subset)
   temp.abs.subset.smooth = smoothResults[[1]]
   temp.abs.subset.smooth.norm = smoothResults[[2]]
