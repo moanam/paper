@@ -161,7 +161,7 @@ for (i in 1:length(reps)){
   # Prepare for plotting bar plot
   OTUs = row.names(mat2max)
   
-  max.dat <- as.data.frame(matrix(nrow=length(OTUs), ncol=3))
+  max.dat <- as.data.frame(matrix(nrow=length(OTUs), ncol=3)) #OTUs, mean, sd
   for (i in 1:length(OTUs)){
     OTU = OTUs[i]
     
