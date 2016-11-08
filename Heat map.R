@@ -94,7 +94,7 @@ for (i in 1:length(reps)){
   replicate = reps[i]
   include = get(paste("include_", replicate, sep=""))
   temp.rel = get(paste("dat.", replicate, ".rel", sep=""))[ , include]
-  temp.subset.names = names(which(apply(temp.rel, 1, max) > 0.00))
+  temp.subset.names = names(which(apply(temp.rel, 1, max) > 0.01))
   assign(paste(replicate, ".rel.subset.names", sep=""), temp.subset.names)
 }
 
@@ -144,7 +144,7 @@ scaleblackorangered <- colorRampPalette(c("black", "orange", "orangered","red"))
 for (i in 1:length(reps)){
   replicate = reps[i]
   mat2plot = get(paste(replicate, ".abs.subset.smooth.norm.ordered.rm", sep=""))
-  mat2max = get(paste("dat.", replicate, ".abs", sep=""))[row.names(mat2plot), ]
+  mat2max = get(paste("dat.", replicate, ".abs", sep=""))#[row.names(mat2plot), ]
   col_breaks = c(seq(min(mat2plot, na.rm=TRUE), max(mat2plot, na.rm=TRUE), length=600))
   
   # Prepare for plotting taxonomic distinctions
