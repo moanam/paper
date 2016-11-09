@@ -168,13 +168,13 @@ for (i in 1:length(reps)){
     trajs <- NULL
     for (j in 1:length(reps)){
       rep = reps[j]
-      traj = unlist(get(paste("dat.", rep, ".abs", sep=""))[OTU, ])
+      traj = unlist(get(paste("dat.", rep, ".abs", sep=""))[OTU, ]) #Get gives the name of an object. Type dat.M1.abs[OTU, ] to see where this gets its thing from. This gives the very last row of the data frame. I don't know what it is trying to do!!
       trajs = rbind(trajs, traj)
     }
     
-    traj.max = apply(trajs, 1, max, na.rm=TRUE)
-    traj.max.mean.log = log10(mean(traj.max))
-    traj.max.log.sd = sd(log10(traj.max))
+    traj.max = apply(trajs, 1, max, na.rm=TRUE) #trajs = the object used. 1 = indicates rows. max = the function applied. Gives the maximum value in each row
+    traj.max.mean.log = log10(mean(traj.max)) #Calculates the log10 of the mean of the maximum values - log(1)=0
+    traj.max.log.sd = sd(log10(traj.max)) #Calclutes the sd of the above. Gives NA (possibly because only 2 numbers?)
     
     max.dat[i, ] = c(OTU, traj.max.mean.log, traj.max.log.sd)
   }
