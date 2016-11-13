@@ -37,8 +37,12 @@ dat.M4 = subset(mydata, Water_mass_PCA == "SAW")
 
 reps = c("M1", "M2", "M3", "M4")
 
-dat.M1 = dat.M1[,c(1,3,12)]
-dat.M2 = dat.M2[,c(1,3,12)]
+for (i in 1:length(reps)){
+  replicate = reps[i]
+  temp = get(paste("dat.", replicate, sep=""))
+  temp.rel = temp[,c(1,3,12)]
+  assign(paste("dat.", replicate, sep=""), temp.rel)
+}
 
 ####This sums the OTU abundances from different water masses from the same time
 library(dplyr)
