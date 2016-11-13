@@ -35,7 +35,7 @@ dat.M2 = subset(mydata, Water_mass_PCA == "STW")
 dat.M3 = subset(mydata, Water_mass_PCA == "FRONT")
 dat.M4 = subset(mydata, Water_mass_PCA == "SAW")
 
-
+reps = c("M1", "M2", "M3", "M4")
 
 dat.M1 = dat.M1[,c(1,3,12)]
 dat.M2 = dat.M2[,c(1,3,12)]
@@ -64,8 +64,6 @@ colnames(dat.M1) <- c("M1.0","M1.126", "M1.182", "M1.325", "M1.406", "M1.448")
 colnames(dat.M2) <- c("M2.0","M2.126", "M2.182", "M2.325", "M2.406", "M2.448")
 
 ############################################
-
-reps = c("M1", "M2")
 
 # Calculate relative abundance data for each replicate
 for (i in 1:length(reps)){
