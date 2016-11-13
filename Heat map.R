@@ -231,7 +231,7 @@ for (i in 1:length(reps)){
   at.labels = c(1,2,3,4,5,6)
   pdf(file=paste(out.path, "fig2a_", replicate, "_barPlot.pdf", sep=""), height=30, width=6)
   par(oma=c(0,0,9,0), mar=c(0,2,2,2), xaxs="i")
-  mp = barplot(traj.max.mean.log.sub, horiz=TRUE, col="dodgerblue4", las=2, names.arg="", xaxt="n", ylim=c(1,83), space=0, width=1, xlim=c(0, 4))
+  mp = barplot(traj.max.mean.log.sub, horiz=TRUE, col="dodgerblue4", las=2, names.arg="", xaxt="n", ylim=c(1,54), space=0, width=1, xlim=c(0, 4))
   plotCI(traj.max.mean.log.sub, mp, gap=0, sfrac=0.002, add=TRUE, cex=0, 
          ui=traj.max.mean.log.sub+as.numeric(max.dat$max.sd), li=traj.max.mean.log.sub-as.numeric(max.dat$max.sd), 
          err="x", col="dodgerblue4", lwd=2)
