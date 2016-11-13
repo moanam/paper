@@ -29,9 +29,12 @@ map = mydata[,c(3,15,16,12)]
 colnames(map) = c("Sample", "RevBarcode", "FwdBarcode", "Timepoint")
 
 ########################################################################################################################
-# Separate data by replicate
-dat.M1 = subset(mydata, Replicate == "A")
-dat.M2 = subset(mydata, Replicate == "B")
+# Separate data by water mass
+dat.M1 = subset(mydata, Water_mass_PCA == "NW")
+dat.M2 = subset(mydata, Water_mass_PCA == "STW")
+dat.M3 = subset(mydata, Water_mass_PCA == "FRONT")
+dat.M4 = subset(mydata, Water_mass_PCA == "SAW")
+
 
 
 dat.M1 = dat.M1[,c(1,3,12)]
