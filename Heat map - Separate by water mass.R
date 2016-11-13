@@ -44,13 +44,15 @@ for (i in 1:length(reps)){
   assign(paste("dat.", replicate, sep=""), temp.dat)
 }
 
-####This sums the OTU abundances from different water masses from the same time
+####This sums the OTU abundances from the replicates and different samples in the same water mass from the same time
 library(dplyr)
-df <- group_by(dat.M1, OTU, Time)
-dat.M1 <- summarise(df, Abundance = sum(value))
-
-df <- group_by(dat.M2, OTU, Time)
-dat.M2 <- summarise(df, Abundance = sum(value))
+for (i in 1:length(reps)){
+  replicate = reps[i]
+  temp = get(paste("dat.", replicate, sep=""))
+  df <- group_by(temp, OTU, Time)
+  temp.dat <- summarise(df, Abundance = sum(value))
+  assign(paste("dat.", replicate, sep=""), temp.dat)
+}
 
 ###################################################
 #rearrange to make times columns
