@@ -165,8 +165,21 @@ for (i in 1:length(reps)){
   
   #trajs <- NULL
   
+  #Get only the OTUs that I want for the bar graph. I should make this in to a for loop.
+#   dat.M1.abs2 = setDT(dat.M1.abs, keep.rownames = TRUE)[]#Makes the row names a column so I can subest only the OTUs that I want
+#   dat.M1.abs3 = dat.M1.abs2[dat.M1.abs2$rn %in% mat3plot$rn, ]#Subsets only the most abundant OTUs
+#   rownames(dat.M1.abs3) <- dat.M1.abs3$rn#Makes the oTU names the row names
+#   dat.M1.abs3$rn <- NULL#Remove the OTU column
+#   
+#   dat.M2.abs2 = setDT(dat.M2.abs, keep.rownames = TRUE)[]#Makes the row names a column so I can subest only the OTUs that I want
+#   dat.M2.abs3 = dat.M2.abs2[dat.M2.abs2$rn %in% mat3plot$rn, ]#Subsets only the most abundant OTUs
+#   rownames(dat.M1.abs3) <- dat.M2.abs3$rn#Makes the oTU names the row names
+#   dat.M2.abs3$rn <- NULL#Remove the OTU column
+#   
+  
   for (i in 1:length(OTUs)){
-    OTU = OTUs[i]
+    OTU = mat3plot$rn[i]
+    # OTU = OTUs[i] #I should just change THIS to the oTUs that I want!!
     
     trajs <- NULL
     for (j in 1:length(reps)){
