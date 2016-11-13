@@ -162,13 +162,16 @@ for (i in 1:length(reps)){
   OTUs = row.names(mat2max)
   
   max.dat <- as.data.frame(matrix(nrow=length(OTUs), ncol=3)) #OTUs, mean, sd
+  
+  #trajs <- NULL
+  
   for (i in 1:length(OTUs)){
     OTU = OTUs[i]
     
     trajs <- NULL
     for (j in 1:length(reps)){
       rep = reps[j]
-      traj = unlist(get(paste("dat.", rep, ".abs", sep=""))[OTU, ]) #Get gives the name of an object. Type dat.M1.abs[OTU, ] to see where this gets its thing from. This gives the very last row of the data frame. I don't know what it is trying to do!!
+      traj = unlist(get(paste("dat.", rep, ".abs", sep=""))[OTU, ]) #Get gives the name of an object. Type dat.M1.abs[OTU, ] to see where this gets its thing from. This gives the trajectory of each OTU (it overwrites the previous one)
       trajs = rbind(trajs, traj)
     }
     
