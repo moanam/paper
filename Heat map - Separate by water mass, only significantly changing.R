@@ -28,12 +28,20 @@ names(tax)[names(tax)=="Taxonomy_4"] <- "Taxonomy"
 map = mydata[,c(3,15,16,12)]
 colnames(map) = c("Sample", "RevBarcode", "FwdBarcode", "Timepoint")
 
+#Significantly changing OTUs
+Significance = read.delim("C:/Users/Moana/Documents/Uni/2016/Publication/Andrew Gray/results 29-04-2016 HB.tab")
+Changing = subset(Significance, tsignificant=="1")
+
+#Subsets to only significant OTUs
+selectedRows <- (mydata$OTU %in% Changing$otu)
+Changingdf <- mydata[selectedRows,]
+
 ########################################################################################################################
 # Separate data by water mass
-dat.M1 = subset(mydata, Water_mass_PCA == "NW")
-dat.M2 = subset(mydata, Water_mass_PCA == "STW")
-dat.M3 = subset(mydata, Water_mass_PCA == "FRONT")
-dat.M4 = subset(mydata, Water_mass_PCA == "SAW")
+dat.M1 = subset(Changingdf, Water_mass_PCA == "NW")
+dat.M2 = subset(Changingdf, Water_mass_PCA == "STW")
+dat.M3 = subset(Changingdf, Water_mass_PCA == "FRONT")
+dat.M4 = subset(Changingdf, Water_mass_PCA == "SAW")
 
 reps = c("M1", "M2", "M3", "M4")
 
@@ -120,7 +128,7 @@ for (i in 1:length(reps)){
   replicate = reps[i]
   include = get(paste("include_", replicate, sep=""))
   temp.rel = get(paste("dat.", replicate, ".rel", sep=""))[ , include]
-  temp.subset.names = names(which(apply(temp.rel, 1, max) > 0.01))
+  temp.subset.names = names(which(apply(temp.rel, 1, max) > 0.0))
   assign(paste(replicate, ".rel.subset.names", sep=""), temp.subset.names)
 }
 
