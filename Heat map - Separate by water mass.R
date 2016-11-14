@@ -214,11 +214,11 @@ for (i in 1:length(reps)){
       trajs = rbind(trajs, traj)
     }
     
-    traj.max = apply(trajs, 1, max, na.rm=TRUE) #trajs = the object used. 1 = indicates rows. max = the function applied. Gives the maximum value in each row
+    traj.max = apply(trajs, 1, max, na.rm=TRUE) #trajs = the object used. 1 = indicates rows. max = the function applied. Gives the maximum value in each row - maximum abundance in each water mass, for each OTU
     traj.max.mean.log = log10(mean(traj.max)) #Calculates the log10 of the mean of the maximum values - log(1)=0, log(0.5)=-0.3, log(0)=-inf (probably from the picking and rareification)
     traj.max.log.sd = sd(log10(traj.max)) #Calclutes the sd of the above. Gives NA, I think if it was only found in one replicate
     
-    max.dat[i, ] = c(OTU, traj.max.mean.log, traj.max.log.sd)
+    max.dat[i, ] = c(OTU, traj.max.mean.log, traj.max.log.sd) #This gives the log of the means of the 4 maximum abundances (1 in each water mass), so of course it is the same for each water mass!
   }
   
   colnames(max.dat) = c("OTU", "max.mean", "max.sd")
