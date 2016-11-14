@@ -57,8 +57,16 @@ for (i in 1:length(reps)){
 ###################################################
 #rearrange to make times columns
 library(reshape2)
-dat.M1 = dcast(dat.M1, OTU ~ Time) #Rearrages so that each time has a column
-dat.M2 = dcast(dat.M2, OTU ~ Time)
+#Rearrages so that each time has a column
+
+for (i in 1:length(reps)){
+  replicate = reps[i]
+  temp = get(paste("dat.", replicate, sep=""))
+  temp.dat = dcast(temp, OTU ~ Time)
+  assign(paste("dat.", replicate, sep=""), temp.dat)
+}
+
+#FRONT is missing the second time point (the front was really narrow then)
 
 ##########################
 #Make OTU row names
