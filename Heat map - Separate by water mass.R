@@ -11,7 +11,7 @@ file.path = "C:/Users/Moana/Documents/Uni/2016/Publication/"
 tax.path = paste(file.path, "Fasta file/outseqs_by_sample_Moana.fasta", sep="")
 # abs.path = paste(file.path, "Data/Absolute_abundances/particleTrajs.txt", sep="")
 out.path = paste(file.path, "Output/", sep="")
-source(paste(file.path, "paper/fig2_v1_functions.R", sep=""))
+source(paste(file.path, "paper/fig2_v1_functions-4 replicates.R", sep=""))
 
 mydata = read.csv("C:/Users/Moana/Documents/Uni/2016/Publication/paper/Fulltaxonomy.csv", header = T)
 tax = mydata[,c(1,34)]
@@ -103,6 +103,8 @@ times = c(0,126, 182, 325, 406, 448)
 #Workaround to just name what we had "absolute abundances", because I'm not using the trajectory
 dat.M1.abs=dat.M1
 dat.M2.abs=dat.M2
+dat.M3.abs=dat.M3
+dat.M4.abs=dat.M4
 
 ##############################################
 
@@ -111,6 +113,8 @@ dat.M2.abs=dat.M2
 
 include_M1 = c(1:6)
 include_M2 = c(1:6)
+include_M3 = c(1:5)
+include_M4 = c(1:6)
 
 for (i in 1:length(reps)){
   replicate = reps[i]
@@ -127,7 +131,7 @@ for (i in 1:length(reps)){
   temp.abs.subset.names = get(paste(replicate, ".rel.subset.names", sep="")) #Names of all the oTUs (I think)
   temp.abs.subset = get(paste("dat.", replicate, ".abs", sep="")) #OTUs and abundances (table)
   
-  smoothResults = medSmoothOTUs(temp.abs.subset.names, dat.M1.abs, dat.M2.abs) #medSmoothOTUs is Manoshi's function to calculate median, smoothed trajectories for all OTUs
+  smoothResults = medSmoothOTUs(temp.abs.subset.names, dat.M1.abs, dat.M2.abs, dat.M3.abs, dat.M4.abs) #medSmoothOTUs is Manoshi's function to calculate median, smoothed trajectories for all OTUs
   #   smoothResults = smoothOTUs(temp.abs.subset.names, temp.abs.subset)
   temp.abs.subset.smooth = smoothResults[[1]]
   temp.abs.subset.smooth.norm = smoothResults[[2]]
