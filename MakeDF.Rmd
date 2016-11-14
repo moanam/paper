@@ -5,7 +5,7 @@ library(phyloseq)
 library(ggplot2)
 
 otutable_biom_file <- paste("C:/Users/Moana/Documents/Uni/2015/ECOL491/All data/data/", "merged_otu_table.biom", sep = "")
-map_file <- paste("C:/Users/Moana/Documents/Uni/2016/Publication/paper/", "NotJan.txt", sep = "")
+map_file <- paste("C:/Users/Moana/Documents/Uni/2015/ECOL491/All data/data/", "Horizontal_Transect.txt", sep = "")
 
 ```
 
@@ -96,7 +96,7 @@ sample_data(KN_phyloseq)$Month = factor(sample_data(KN_phyloseq)$Month, levels =
 ```{r Load_libraries_and_data}
 
 Jan_otutable_biom_file <- paste("C:/Users/Moana/Documents/Uni/2015/ECOL491/All data/data/", "Jan_8000_merged_otu_table.biom", sep = "")
-Jan_map_file <- paste("C:/Users/Moana/Documents/Uni/2016/Publication/paper/", "Jan.txt", sep = "")
+Jan_map_file <- paste("C:/Users/Moana/Documents/Uni/2015/ECOL491/All data/data/", "JanHorizontal_Transect.txt", sep = "")
 
 ```
 
@@ -252,7 +252,7 @@ NewDF2 <- na.omit(NewDF2)
 
 #write.csv(NewDF2, file = "C://Users//Moana//Documents//Uni//2015//ECOL491//All data//data//S_OTUMetadataLayout2.csv", row.names=FALSE)
 
-Fulltax=pOTU[,c(95:101,1)]#Isolate the taxonomy data
+Fulltax=pOTU[,c(86:92,1)]#Isolate the taxonomy data
 #Fulltax2=unique(Fulltax)#Seems to be unnesessary
 NewDF3 <- merge(NewDF2, Fulltax, by="OTU", all.x=TRUE, all.y=TRUE)
 #write.csv(NewDF3, file = "C:/Users/Moana/Documents/Uni/2016/Publication/paper/Fulltaxonomy.csv", row.names=FALSE)
