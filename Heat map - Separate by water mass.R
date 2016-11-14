@@ -70,12 +70,19 @@ for (i in 1:length(reps)){
 
 ##########################
 #Make OTU row names
-dat.M1 <- data.frame(dat.M1[,-1], row.names=dat.M1[,1])
-dat.M2 <- data.frame(dat.M2[,-1], row.names=dat.M2[,1])
+
+for (i in 1:length(reps)){
+  replicate = reps[i]
+  temp = get(paste("dat.", replicate, sep=""))
+  temp.dat = data.frame(temp[,-1], row.names=temp[,1])
+  assign(paste("dat.", replicate, sep=""), temp.dat)
+}
 
 #Change column names
 colnames(dat.M1) <- c("M1.0","M1.126", "M1.182", "M1.325", "M1.406", "M1.448")
 colnames(dat.M2) <- c("M2.0","M2.126", "M2.182", "M2.325", "M2.406", "M2.448")
+colnames(dat.M3) <- c("M3.0","M3.182", "M3.325", "M3.406", "M3.448")
+colnames(dat.M4) <- c("M4.0","M4.126", "M4.182", "M4.325", "M4.406", "M4.448")
 
 ############################################
 
