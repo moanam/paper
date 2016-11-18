@@ -246,13 +246,15 @@ for (i in 1:length(reps)){
   colorScheme.ordered = temp.ordered$colorScheme
   
     #Graph layout
-  par(mar=c(6,5,0,1), mgp=c(7,2,0), oma=c(2,15.5,2,0))
-  layout(matrix(c(1,2),1,2), widths=c(1.2,7))
+  par(mar=c(6,5,0,1), mgp=c(7,2,0), oma=c(2,15.5,2,0)) #Par=Parameters. Mar=margin, (bottom, left, top, right) gives the number of lines of margin. mgp=margin line for the axis title, axis labels and axis line. Oma=(bottom, left, top, right) outer margins in lines of text
+  layout(matrix(c(1,2),1,2), widths=c(1.2,7)) #matrix=Divides the graph in to 1 row and 2 columns. Figure 1 gets column 1 and figure 2 gets column 2. widths= relative witdths of the columns
+    #This makes the taxonomy bar!
   image(as.matrix(t(as.numeric(famNames.collapsed))), xaxt='n', yaxt='n', bty='n',
         breaks=0:length(levels(famNames.collapsed)), 
-        col=as.vector(colorScheme.ordered))
+        col=as.vector(colorScheme.ordered)) #Colours to use
   mtext(text="Taxon", side=2, line=1.5, outer=FALSE, cex=4, font=2)
   par(mar=c(6,0,0,2))
+    #This makes the heat map
   image(x=times, y=seq(1:length(row.names(mat2plot))), z=as.matrix(t(mat2plot)),
         col=scaleblackorangered, breaks=col_breaks,
         xaxt='n', yaxt="n", xlab="", ylab="")
