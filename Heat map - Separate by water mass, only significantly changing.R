@@ -239,11 +239,13 @@ for (i in 1:length(reps)){
   legendOrder = c("Flavobacteriales", "Rhodobacterales", "Oceanospirillales", "Alteromonadales", "Rhodospirillales", "SAR11 clade", "Other")
   #legendOrder = c("Vibrionales", "Alteromonadales", "Oceanospirillales", "Rhodobacterales", "Flavobacteriales", "Sphingobacteriales", "Other")
   
+    #Legend
   temp = data.frame(cbind(legendOrder, colorScheme))
   row.names(temp) = temp$legendOrder
   temp.ordered = temp[levels(famNames.collapsed), ]
   colorScheme.ordered = temp.ordered$colorScheme
   
+    #Graph layout
   par(mar=c(6,5,0,1), mgp=c(7,2,0), oma=c(2,15.5,2,0))
   layout(matrix(c(1,2),1,2), widths=c(1.2,7))
   image(as.matrix(t(as.numeric(famNames.collapsed))), xaxt='n', yaxt='n', bty='n',
@@ -273,6 +275,7 @@ for (i in 1:length(reps)){
   abline(v=c(0,1,2,3,4,5), col="dimgrey", lwd=2, lty=2)
   dev.off()
   
+    #Colour scale
   pdf(file=paste(out.path, "fig2a_color_scale_", replicate, ".pdf", sep=""), height=1, width=5)
   par(mar=c(1,1.5,1,1.5), oma=c(0,0,2,0), mgp=c(3,0.5,0), tck=-0.3)
   image.scale(as.matrix(t(mat2plot)), col=scaleblackorangered, breaks=col_breaks)
