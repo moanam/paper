@@ -136,10 +136,10 @@ for (i in 1:length(reps)){
 # Calculate smoothed trajectories for all OTUs
 for (i in 1:length(reps)){
   replicate = reps[i]
-  temp.abs.subset.names = get(paste(replicate, ".rel.subset.names", sep="")) #Names of all the oTUs (I think)
+  temp.abs.subset.names = get(paste(replicate, ".rel.subset.names", sep="")) #Names of all the oTUs to be used in the heat map for that figure. Includes the changing OTUs across everything, but only those actually found in the water mass
   temp.abs.subset = get(paste("dat.", replicate, ".abs", sep="")) #OTUs and abundances (table)
   
-  smoothResults = medSmoothOTUs(temp.abs.subset.names, dat.M1.abs, dat.M2.abs, dat.M3.abs, dat.M4.abs) #medSmoothOTUs is Manoshi's function to calculate median, smoothed trajectories for all OTUs
+  smoothResults = medSmoothOTUs(temp.abs.subset.names, dat.M1.abs, dat.M2.abs, dat.M3.abs, dat.M4.abs) #medSmoothOTUs is Manoshi's function to calculate median, smoothed trajectories for all OTUs. Maybe this is why the plots are so similar and I should just call the one replicate I'm plotting each time?
   #   smoothResults = smoothOTUs(temp.abs.subset.names, temp.abs.subset)
   temp.abs.subset.smooth = smoothResults[[1]]
   temp.abs.subset.smooth.norm = smoothResults[[2]]
@@ -164,11 +164,15 @@ source_url('https://gist.github.com/menugget/7689145/raw/dac746aa322ca4160a5fe66
 ################
 #Heatmap taxonomy
 library(data.table)
-mat3plot = get(paste(replicate, ".abs.subset.smooth.norm.ordered.rm", sep=""))
-OTUs_in_fig = setDT(mat3plot, keep.rownames = TRUE)[] #Makes what I think are the oTUs a column
-OTUnames = subset(OTUs_in_fig, select=c("rn")) #Isolate the OTUs. But OTUS also gives this!
+for (i in 1:length(reps)){
+  mat3plot = get(paste(replicate, ".abs.subset.smooth.norm.ordered.rm", sep="")) #This only has the OTUs as row names for M1-M3
+  OTUs_in_fig = setDT(mat3plot, keep.rownames = TRUE)[] #Makes what I think are the oTUs a column
+  OTUnamesused = subset(OTUs_in_fig, select=c("rn")) #Isolate the OTUs. But OTUS also gives this!
 
-OTUnames$Taxonomy <- tax$Taxonomy[match(OTUnames$rn,tax$OTU)]
+  OTUnamesused$Taxonomy <- tax$Taxonomy[match(OTUnamesused$rn,tax$OTU)]
+  assign(paste(replicate, ".OTUnames", sep=""), OTUnamesused)
+  
+}
 
 ################
 # Plot heatmap
@@ -182,6 +186,7 @@ for (i in 1:length(reps)){
   col_breaks = c(seq(min(mat2plot, na.rm=TRUE), max(mat2plot, na.rm=TRUE), length=600))
   
   # Prepare for plotting taxonomic distinctions
+  OTUnames <- get(paste(replicate, ".OTUnames", sep=""))
   famNames <- OTUnames[['Taxonomy']]
   famNames = unlist(lapply(famNames, function(fam) ifelse((is.na(fam) | fam == "unclassified"), yes="UATL", no=fam)))
   famNames.collapsed = as.factor(famNames)
