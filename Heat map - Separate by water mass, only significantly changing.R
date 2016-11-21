@@ -234,14 +234,14 @@ for (i in 1:length(reps)){
 #   dat.M2.abs3$rn <- NULL#Remove the OTU column
 #   
   
-  for (i in 1:3){#length(OTUs)
+  for (i in 1:length(OTUs)){
 #     temp.OTU=get(paste("dat.", replicate, ".abs", sep=""))
 #     temp.OTU=setDT(temp.OTU, keep.rownames = TRUE)[]
     OTU = Changing$otu[i]
     # OTU = OTUs[i] #I should just change THIS to the oTUs that I want!!
     
     trajs <- NULL
-    for (j in 1:3){#length(reps)
+    for (j in 1:length(reps)){
       rep = reps[j]
       traj = unlist(get(paste("dat.", rep, ".abs", sep=""))[OTU, ]) #Get gives the name of an object. Type dat.M1.abs[OTU, ] to see where this gets its thing from. This gives the trajectory of each OTU (it overwrites the previous one)
       trajs = rbind(trajs, traj)
