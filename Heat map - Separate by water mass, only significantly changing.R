@@ -133,7 +133,18 @@ for (i in 1:length(reps)){
 }
 
 ########################################################################################################################
-# Calculate smoothed trajectories for all OTUs
+# Calculate smoothed trajectories for all OTUs and do the heatmap taxonomy. This used to be two different bits but something weird happnened.
+
+library(devtools)
+source_url('https://gist.github.com/menugget/7689145/raw/dac746aa322ca4160a5fe66c70fec16ebe26faf9/image.scale.2.r')
+#image.scale function
+
+################
+#Heatmap taxonomy
+library(data.table)
+
+###############
+
 for (i in 1:length(reps)){
   replicate = reps[i]
   temp.abs.subset.names = get(paste(replicate, ".rel.subset.names", sep="")) #Names of all the oTUs to be used in the heat map for that figure. Includes the changing OTUs across everything, but only those actually found in the water mass
@@ -155,24 +166,31 @@ for (i in 1:length(reps)){
   temp.abs.subset.smooth.norm.rm.ordered = temp.abs.subset.smooth.norm.rm[rev(order(apply(temp.abs.subset.smooth.norm.rm, 1, calc_COM))), ]
   
   assign(paste(replicate, ".abs.subset.smooth.norm.ordered.rm", sep=""), temp.abs.subset.smooth.norm.rm.ordered)
-}
-########################################################################################################################
-library(devtools)
-source_url('https://gist.github.com/menugget/7689145/raw/dac746aa322ca4160a5fe66c70fec16ebe26faf9/image.scale.2.r')
-#image.scale function
-
-################
-#Heatmap taxonomy
-library(data.table)
-for (i in 1:length(reps)){
-  mat3plot = get(paste(replicate, ".abs.subset.smooth.norm.ordered.rm", sep="")) #This only has the OTUs as row names for M1-M3
-  OTUs_in_fig = setDT(mat3plot, keep.rownames = TRUE)[] #Makes what I think are the oTUs a column
+  
+  OTUs_in_fig = setDT(temp.abs.subset.smooth.norm.rm.ordered, keep.rownames = TRUE)[] #Makes what I think are the oTUs a column
   OTUnamesused = subset(OTUs_in_fig, select=c("rn")) #Isolate the OTUs. But OTUS also gives this!
-
+  
   OTUnamesused$Taxonomy <- tax$Taxonomy[match(OTUnamesused$rn,tax$OTU)]
   assign(paste(replicate, ".OTUnames", sep=""), OTUnamesused)
   
 }
+########################################################################################################################
+# library(devtools)
+# source_url('https://gist.github.com/menugget/7689145/raw/dac746aa322ca4160a5fe66c70fec16ebe26faf9/image.scale.2.r')
+# #image.scale function
+# 
+# ################
+# #Heatmap taxonomy
+# library(data.table)
+# for (i in 1:length(reps)){
+#   mat3plot = get(paste(replicate, ".abs.subset.smooth.norm.ordered.rm", sep="")) #This only has the OTUs as row names for M1-M3
+#   OTUs_in_fig = setDT(mat3plot, keep.rownames = TRUE)[] #Makes what I think are the oTUs a column
+#   OTUnamesused = subset(OTUs_in_fig, select=c("rn")) #Isolate the OTUs. But OTUS also gives this!
+# 
+#   OTUnamesused$Taxonomy <- tax$Taxonomy[match(OTUnamesused$rn,tax$OTU)]
+#   assign(paste(replicate, ".OTUnames", sep=""), OTUnamesused)
+#   
+# }
 
 ################
 # Plot heatmap
@@ -217,7 +235,7 @@ for (i in 1:length(reps)){
 #   
   
   for (i in 1:length(OTUs)){
-    OTU = mat3plot$rn[i]
+    OTU = mat3plot$rn[i] #Probably not the best one to use as it will just be the last of 4 left over from the loop.
     # OTU = OTUs[i] #I should just change THIS to the oTUs that I want!!
     
     trajs <- NULL
