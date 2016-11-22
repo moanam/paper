@@ -134,13 +134,13 @@ source_url('https://gist.github.com/menugget/7689145/raw/dac746aa322ca4160a5fe66
 #Heatmap taxonomy
 library(data.table)
 
-# Calculate smoothed trajectories for all OTUs
+###############
 for (i in 1:length(reps)){
   replicate = reps[i]
-  temp.abs.subset.names = get(paste(replicate, ".rel.subset.names", sep="")) #Names of all the oTUs (I think)
+  temp.abs.subset.names = get(paste(replicate, ".rel.subset.names", sep="")) #Names of all the oTUs
   temp.abs.subset = get(paste("dat.", replicate, ".abs", sep="")) #OTUs and abundances (table)
   
-  smoothResults = medSmoothOTUs(temp.abs.subset.names, dat.M1.abs, dat.M2.abs, dat.M3.abs, dat.M4.abs) #medSmoothOTUs is Manoshi's function to calculate median, smoothed trajectories for all OTUs
+  smoothResults = medSmoothOTUs(temp.abs.subset.names, dat.M1.abs, dat.M2.abs, dat.M3.abs, dat.M4.abs) #medSmoothOTUs is Manoshi's function to calculate median, smoothed trajectories for all OTUs.
   #   smoothResults = smoothOTUs(temp.abs.subset.names, temp.abs.subset)
   temp.abs.subset.smooth = smoothResults[[1]]
   temp.abs.subset.smooth.norm = smoothResults[[2]]
@@ -176,7 +176,6 @@ for (i in 1:length(reps)){
 # ################
 # #Heatmap taxonomy
 # library(data.table)
-
 # for (i in 1:length(reps)){
 #   replicate = reps[i]
 #   mat3plot = get(paste(replicate, ".abs.subset.smooth.norm.ordered.rm", sep="")) #None of these have taxonomy once read in
