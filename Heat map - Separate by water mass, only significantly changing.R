@@ -169,7 +169,7 @@ for (i in 1:length(reps)){
   temp.abs.subset.smooth.rm.ordered = temp.abs.subset.smooth.rm[rev(order(apply(temp.abs.subset.smooth.rm, 1, calc_COM))), ]
   temp.abs.subset.smooth.norm.rm.ordered = temp.abs.subset.smooth.norm.rm[rev(order(apply(temp.abs.subset.smooth.norm.rm, 1, calc_COM))), ]
   
-  assign(paste(replicate, ".abs.subset.smooth.norm.ordered.rm", sep=""), temp.abs.subset.smooth.norm.rm.ordered)
+  # assign(paste(replicate, ".abs.subset.smooth.norm.ordered.rm", sep=""), temp.abs.subset.smooth.norm.rm.ordered)
   
   OTUs_in_fig = setDT(temp.abs.subset.smooth.norm.rm.ordered, keep.rownames = TRUE)[] #Makes what I think are the oTUs a column
   OTUnamesused = subset(OTUs_in_fig, select=c("rn")) #Isolate the OTUs. But OTUS also gives this!
@@ -177,6 +177,8 @@ for (i in 1:length(reps)){
   OTUnamesused$Taxonomy <- tax$Taxonomy[match(OTUnamesused$rn,tax$OTU)]
   assign(paste(replicate, ".OTUnames", sep=""), OTUnamesused)
   
+  temp.abs.subset.smooth.norm.rm.ordered = temp.abs.subset.smooth.norm.rm[rev(order(apply(temp.abs.subset.smooth.norm.rm, 1, calc_COM))), ]
+  assign(paste(replicate, ".abs.subset.smooth.norm.ordered.rm", sep=""), temp.abs.subset.smooth.norm.rm.ordered)
 }
 ########################################################################################################################
 # library(devtools)
