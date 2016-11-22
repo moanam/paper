@@ -237,7 +237,7 @@ for (i in 1:length(reps)){
   for (i in 1:length(OTUs)){
 #     temp.OTU=get(paste("dat.", replicate, ".abs", sep=""))
 #     temp.OTU=setDT(temp.OTU, keep.rownames = TRUE)[]
-    OTU = Changing$otu[i]
+    OTU = Changing$otu[i] #This line doesn't work. It makes a factor, with 4976 levels! So then I can't call one OTU later
     # OTU = OTUs[i] #I should just change THIS to the oTUs that I want!!
     
     trajs <- NULL
