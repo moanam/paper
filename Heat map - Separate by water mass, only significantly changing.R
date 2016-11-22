@@ -30,7 +30,11 @@ colnames(map) = c("Sample", "RevBarcode", "FwdBarcode", "Timepoint")
 
 #Significantly changing OTUs
 Significance = read.delim("C:/Users/Moana/Documents/Uni/2016/Publication/Andrew Gray/results 29-04-2016 HB.tab")
-Changing = subset(Significance, tsignificant=="1")
+Changing.1 = subset(Significance, tsignificant=="1")
+
+#Changing has some weird extra data (way too many row names)
+#write.csv(Changing.1, file = "C:/Users/Moana/Documents/Uni/2016/Publication/paper/Changingtaxa.csv", row.names=FALSE)
+Changing = read.csv("C:/Users/Moana/Documents/Uni/2016/Publication/paper/Changingtaxa.csv", header = T)
 
 #Subsets to only significant OTUs
 selectedRows <- (mydata$OTU %in% Changing$otu)
@@ -237,7 +241,7 @@ for (i in 1:length(reps)){
   for (i in 1:length(OTUs)){
 #     temp.OTU=get(paste("dat.", replicate, ".abs", sep=""))
 #     temp.OTU=setDT(temp.OTU, keep.rownames = TRUE)[]
-    OTU = Changing$otu[i] #This line doesn't work. It makes a factor, with 4976 levels! So then I can't call one OTU later
+    OTU = Changing$otu[i]
     # OTU = OTUs[i] #I should just change THIS to the oTUs that I want!!
     
     trajs <- NULL
