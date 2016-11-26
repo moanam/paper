@@ -162,9 +162,7 @@ NewDF2 <- merge(PhylumCount2, Metadata, by="SampleID")#, all.x=TRUE, all.y=TRUE)
 
 #write.csv(NewDF2, file = "C://Users//Moana//Documents//Uni//2015//ECOL491//All data//data//NewOTUMetadataLayout2inclNA.csv", row.names=FALSE)
 
-Fulltax=pOTU[,c(86:92,1)]#Isolate the taxonomy data
-#Fulltax2=unique(Fulltax)#Seems to be unnesessary
-NewDF3 <- merge(NewDF2, Fulltax, by="OTU", all.x=TRUE, all.y=TRUE)
+NewDF3 <- merge(NewDF2, tdf, by="OTU", all.x=TRUE, all.y=TRUE) #tdf adds all the other taxonomy
 #write.csv(NewDF3, file = "C:/Users/Moana/Documents/Uni/2016/Publication/paper/NewFulltaxonomyinclNA.csv", row.names=FALSE)
 
 
