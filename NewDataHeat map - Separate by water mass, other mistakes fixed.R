@@ -13,7 +13,7 @@ tax.path = paste(file.path, "Fasta file/outseqs_by_sample_Moana.fasta", sep="")
 out.path = paste(file.path, "Output/", sep="")
 source(paste(file.path, "paper/fig2_v1_functions-4 replicates.R", sep=""))
 
-mydata = read.csv("C:/Users/Moana/Documents/Uni/2016/Publication/paper/Fulltaxonomy.csv", header = T)
+mydata = read.csv("C:/Users/Moana/Documents/Uni/2016/Publication/paper/NewFulltaxonomyinclNA.csv", header = T)
 tax = mydata[,c(1,34)]
 colnames(tax) = c("OTU", "Taxonomy")
 
