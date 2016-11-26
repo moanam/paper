@@ -136,7 +136,7 @@ data = dcast(agg.phylum, SampleID ~ OTU) #Rearrages so that each species has a c
 
 
 PhylumCount = data
-Metadata = rbind(bmsd, Jan_bmsd)
+Metadata = bmsd
 NewDF <- merge(PhylumCount, Metadata, by="SampleID", all.x=TRUE, all.y=TRUE)
 NewDF$Chlorophylla <- NULL
 NewDF$BA <- NULL
