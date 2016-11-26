@@ -136,29 +136,36 @@ data = dcast(agg.phylum, SampleID ~ OTU) #Rearrages so that each species has a c
 
 
 PhylumCount = data
-Metadata = bmsd
-NewDF <- merge(PhylumCount, Metadata, by="SampleID", all.x=TRUE, all.y=TRUE)
-NewDF$Chlorophylla <- NULL
-NewDF$BA <- NULL
-NewDF$BP <- NULL
-NewDF <- na.omit(NewDF)
+# Metadata = bmsd
 
-#write.csv(NewDF, file = "C://Users//Moana//Documents//Uni//2015//ECOL491//All data//data//S_OTUMetadata.csv", row.names=FALSE)
+# write.csv(bmsd, file = "C://Users//Moana//Documents//Uni//2015//ECOL491//All data//data//bmsdMetadata.csv", row.names=FALSE)
+# write.csv(data, file = "C://Users//Moana//Documents//Uni//2015//ECOL491//All data//data//dataPhyla.csv", row.names=FALSE)
+
+Metadata = read.csv("C://Users//Moana//Documents//Uni//2015//ECOL491//All data//data//bmsdMetadata.csv", header = TRUE)
+# PhylumCount = read.csv("C://Users//Moana//Documents//Uni//2015//ECOL491//All data//data//dataPhyla.csv", header = TRUE)
+
+NewDF <- merge(PhylumCount, Metadata, by="SampleID")#, all.x=TRUE, all.y=TRUE)
+# NewDF$Chlorophylla <- NULL
+# NewDF$BA <- NULL
+# NewDF$BP <- NULL
+# NewDF <- na.omit(NewDF)
+
+#write.csv(NewDF, file = "C://Users//Moana//Documents//Uni//2015//ECOL491//All data//data//NewOTUMetadatainclNA.csv", row.names=FALSE)
 
 
 PhylumCount2 = agg.phylum
-NewDF2 <- merge(PhylumCount2, Metadata, by="SampleID", all.x=TRUE, all.y=TRUE)
-NewDF2$Chlorophylla <- NULL
-NewDF2$BA <- NULL
-NewDF2$BP <- NULL
-NewDF2 <- na.omit(NewDF2)
+NewDF2 <- merge(PhylumCount2, Metadata, by="SampleID")#, all.x=TRUE, all.y=TRUE)
+# NewDF2$Chlorophylla <- NULL
+# NewDF2$BA <- NULL
+# NewDF2$BP <- NULL
+# NewDF2 <- na.omit(NewDF2)
 
-#write.csv(NewDF2, file = "C://Users//Moana//Documents//Uni//2015//ECOL491//All data//data//S_OTUMetadataLayout2.csv", row.names=FALSE)
+#write.csv(NewDF2, file = "C://Users//Moana//Documents//Uni//2015//ECOL491//All data//data//NewOTUMetadataLayout2inclNA.csv", row.names=FALSE)
 
 Fulltax=pOTU[,c(86:92,1)]#Isolate the taxonomy data
 #Fulltax2=unique(Fulltax)#Seems to be unnesessary
 NewDF3 <- merge(NewDF2, Fulltax, by="OTU", all.x=TRUE, all.y=TRUE)
-#write.csv(NewDF3, file = "C:/Users/Moana/Documents/Uni/2016/Publication/paper/Fulltaxonomy.csv", row.names=FALSE)
+#write.csv(NewDF3, file = "C:/Users/Moana/Documents/Uni/2016/Publication/paper/NewFulltaxonomyinclNA.csv", row.names=FALSE)
 
 
 ```
