@@ -1,0 +1,261 @@
+rm(list=ls())
+
+```{r Load_libraries_and_data}
+library(phyloseq)
+library(ggplot2)
+
+otutable_biom_file <- paste("C:/Users/Moana/Documents/Uni/2015/ECOL491/All data/data/", "merged_otu_table.biom", sep = "")
+map_file <- paste("C:/Users/Moana/Documents/Uni/2015/ECOL491/All data/data/", "Horizontal_Transect.txt", sep = "")
+
+```
+
+
+# Now import the .biom-formatted otu_table-tax_table file.
+```{r}
+biom_otu_tax <- import_biom(otutable_biom_file)
+
+# Add sample data to the dataset using merge
+bmsd <- import_qiime_sample_data(map_file)
+class(bmsd)
+dim(bmsd)#dimensions of bmsd (what is the structure of the map file?) Should match the number of samples and variables
+sample_data(bmsd)
+biom_otu_tax
+
+#Order levels
+bmsd$Month <- factor(bmsd$Month, levels = c("January", "June", "July", "December", "March", "April"))
+bmsd$Water_mass_PCA <- factor(bmsd$Water_mass_PCA, levels = c("NW", "STW", "FRONT", "SAW"))
+
+#Merge into phyloseq format
+KN_phyloseq <- merge_phyloseq(biom_otu_tax, bmsd)
+KN_phyloseq
+```
+
+#####Create average result for multiple rarefaction by transforming data using (divide by 10) and check counts per sample
+```{r Create average result for multiple rarefaction by transforming data using (divide by 10), results='markup'}
+KN_phyloseq = transform_sample_counts(KN_phyloseq, function(x) x/10)
+sample_sums(KN_phyloseq)
+```
+
+##### Round and confirm count number
+```{r Round and confirm count number, results='markup'}
+KN_phyloseq = transform_sample_counts(KN_phyloseq, round)
+sample_sums(KN_phyloseq)
+#check that all numbers are integers
+otu_table_df<- as.data.frame(otu_table(KN_phyloseq))
+```
+
+Check that all OTUs have representative counts  
+For here taxa = OTU  
+__Commands interpretation:__  
+_Total number of taxa in dataset:_ sum(taxa_sums(KN_phyloseq) > 0)   
+
+_Any taxa with no hits:_ any(taxa_sums(KN_phyloseq)== 0)
+
+```{r identify taxa with only zeros, results='markup', echo=TRUE}
+sum(taxa_sums(KN_phyloseq) > 0)
+any(taxa_sums(KN_phyloseq)== 0)
+sum(taxa_sums(KN_phyloseq) == 0)
+any(taxa_sums(KN_phyloseq) > 1)
+sum(taxa_sums(KN_phyloseq) > 1)
+any(taxa_sums(KN_phyloseq) < 1)
+sum(taxa_sums(KN_phyloseq) < 1)
+```
+
+#####Prune taxa with less than 1 count and check taxa numbers again
+```{r  Save original file and create new file with only present (no zeroes) taxa, results='markup', echo=TRUE}
+
+#Create new file with only present (no zeroes) taxa
+
+KN_phyloseq = prune_taxa(taxa_sums(KN_phyloseq) > 1, KN_phyloseq)
+any(sample_sums(KN_phyloseq) == 0)
+any(sample_sums(KN_phyloseq) > 0)
+sum(taxa_sums(KN_phyloseq) > 0)
+any(sample_sums(KN_phyloseq) < 1)
+sum(taxa_sums(KN_phyloseq) < 1)
+```
+
+#plot across variable
+```{r}
+sample_variables(KN_phyloseq)
+```
+
+#rename Ranks
+```{r}
+colnames(tax_table(KN_phyloseq)) = c("Domain", "Phylum", "Class", "Order", "Family", "Genus", "Species")
+
+```
+
+#Order levels
+```{r}
+sample_data(KN_phyloseq)$Water_mass_PCA = factor(sample_data(KN_phyloseq)$Water_mass_PCA, levels = c("NW", "STW", "FRONT", "SAW"))
+sample_data(KN_phyloseq)$Month = factor(sample_data(KN_phyloseq)$Month, levels = c("January", "June", "July", "December", "March", "April"))
+```
+
+####################################################################################################################
+
+```{r Load_libraries_and_data}
+
+Jan_otutable_biom_file <- paste("C:/Users/Moana/Documents/Uni/2015/ECOL491/All data/data/", "Jan_8000_merged_otu_table.biom", sep = "")
+Jan_map_file <- paste("C:/Users/Moana/Documents/Uni/2015/ECOL491/All data/data/", "JanHorizontal_Transect.txt", sep = "")
+
+```
+
+
+# Now import the .biom-formatted otu_table-tax_table file.
+```{r}
+Jan_biom_otu_tax <- import_biom(Jan_otutable_biom_file)
+
+# Add sample data to the dataset using merge
+Jan_bmsd <- import_qiime_sample_data(Jan_map_file)
+class(Jan_bmsd)
+dim(Jan_bmsd)#dimensions of Jan_bmsd (what is the structure of the map file?) Should match the number of samples and variables
+sample_data(Jan_bmsd)
+Jan_biom_otu_tax
+
+#Order levels
+Jan_bmsd$Month <- factor(Jan_bmsd$Month, levels = c("January", "June", "July", "December", "March", "April"))
+Jan_bmsd$Water_mass_PCA <- factor(Jan_bmsd$Water_mass_PCA, levels = c("NW", "STW", "FRONT", "SAW"))
+
+#Merge into phyloseq format
+Jan_phyloseq <- merge_phyloseq(Jan_biom_otu_tax, Jan_bmsd)
+Jan_phyloseq
+```
+
+#####Create average result for multiple rarefaction by transforming data using (divide by 10) and check counts per sample
+```{r Create average result for multiple rarefaction by transforming data using (divide by 10), results='markup'}
+Jan_phyloseq = transform_sample_counts(Jan_phyloseq, function(x) x/10)
+sample_sums(Jan_phyloseq)
+```
+
+##### Round and confirm count number
+```{r Round and confirm count number, results='markup'}
+Jan_phyloseq = transform_sample_counts(Jan_phyloseq, round)
+sample_sums(Jan_phyloseq)
+#check that all numbers are integers
+otu_table_df<- as.data.frame(otu_table(Jan_phyloseq))
+```
+
+Check that all OTUs have representative counts  
+For here taxa = OTU  
+__Commands interpretation:__  
+_Total number of taxa in dataset:_ sum(taxa_sums(Jan_phyloseq) > 0)   
+
+_Any taxa with no hits:_ any(taxa_sums(Jan_phyloseq)== 0)
+
+```{r identify taxa with only zeros, results='markup', echo=TRUE}
+sum(taxa_sums(Jan_phyloseq) > 0)
+any(taxa_sums(Jan_phyloseq)== 0)
+sum(taxa_sums(Jan_phyloseq) == 0)
+any(taxa_sums(Jan_phyloseq) > 1)
+sum(taxa_sums(Jan_phyloseq) > 1)
+any(taxa_sums(Jan_phyloseq) < 1)
+sum(taxa_sums(Jan_phyloseq) < 1)
+```
+
+#####Prune taxa with less than 1 count and check taxa numbers again
+```{r  Save original file and create new file with only present (no zeroes) taxa, results='markup', echo=TRUE}
+
+#Create new file with only present (no zeroes) taxa
+
+Jan_phyloseq = prune_taxa(taxa_sums(Jan_phyloseq) > 1, Jan_phyloseq)
+any(sample_sums(Jan_phyloseq) == 0)
+any(sample_sums(Jan_phyloseq) > 0)
+sum(taxa_sums(Jan_phyloseq) > 0)
+any(sample_sums(Jan_phyloseq) < 1)
+sum(taxa_sums(Jan_phyloseq) < 1)
+```
+
+#plot across variable
+```{r}
+sample_variables(Jan_phyloseq)
+```
+
+#rename Ranks
+```{r}
+colnames(tax_table(Jan_phyloseq)) = c("Domain", "Phylum", "Class", "Order", "Family", "Genus", "Species")
+
+```
+
+#Order levels
+```{r}
+sample_data(Jan_phyloseq)$Water_mass_PCA = factor(sample_data(Jan_phyloseq)$Water_mass_PCA, levels = c("NW", "STW", "FRONT", "SAW"))
+sample_data(Jan_phyloseq)$Month = factor(sample_data(Jan_phyloseq)$Month, levels = c("January", "June", "July", "December", "March", "April"))
+```
+
+####################################################################################################################
+
+#Merge files
+```{r}
+complete_phyloseq = merge_phyloseq(KN_phyloseq, Jan_phyloseq)
+```
+
+
+#subset samples by experiment and calculate alpha
+```{r}
+Exp1_phyloseq = complete_phyloseq
+#Exp1_phyloseq = subset_samples(complete_phyloseq, Exp1 == "yes")
+alpha_summary_Exp1 <- estimate_richness(Exp1_phyloseq, measures = c("Observed", "Shannon")) #gives a tabel of important numbers for when you are writing up
+
+```
+
+##########################################################################################################################
+
+#Make OTU data frame
+```{r}
+library(ggplot2)
+library(plyr)
+library(scales)
+library(reshape)
+library(RColorBrewer)
+library(grid)
+library(phyloseq)
+
+speciesList <- tapply(sample_names(Exp1_phyloseq), get_variable(Exp1_phyloseq, "SampleID"), c) #Makes columns of water mass types and says which samles are found there
+speciesPhyseq <- lapply(speciesList, prune_samples, Exp1_phyloseq) #only samples that have these species will be kept
+speciesOTUtable <- lapply(speciesPhyseq,otu_table) #go through data and extract the information that matches that data
+speciesAvg <- lapply(speciesOTUtable,rowMeans) #what does each species contribute to the 100%? percent transformation
+pooledOTUtable = t(do.call(rbind,speciesAvg)) #Take the new average and bind it to original document
+#This is as far back as I could trace the x
+pooledOTUtable = data.frame(OTU=row.names(pooledOTUtable),pooledOTUtable) #converts data to a dataframe (note that this is subsetted!!)
+TT = tax_table(Exp1_phyloseq) #attaches taxonomy to those species
+TT = TT[, which(apply(!apply(TT, 2, is.na), 2, any))]
+tdf = data.frame(TT, OTU = taxa_names(Exp1_phyloseq)) #attaches OTUs to data frame
+pOTUtax = merge(pooledOTUtable, tdf, by.x = "OTU")
+pOTU = data.frame(pOTUtax,SeqTotal = rowSums(pOTUtax[,2:85])) #numbers show in which columns treatment data is located
+pOTU.phylum =pOTU[,c(2:85,1)] #need to change this and the above numbers manually. The 1 refers to the column of taxonomy data
+melt.phylum = melt(pOTU.phylum,id.vars="OTU") #melt all the OTUs that are one particular thing into a rank. Still has many observations for each OTU in each water mass
+colnames(melt.phylum)[2]="SampleID"
+agg.phylum=aggregate(.~OTU+SampleID,melt.phylum,sum) #Turns it into percentages
+agg.phylum$SampleID = gsub( "X", "", paste(agg.phylum$SampleID)) ##########THIS IS MY FIX!!!!!!#######################
+
+library(reshape2)
+data = dcast(agg.phylum, SampleID ~ OTU) #Rearrages so that each species has a column
+
+
+PhylumCount = data
+Metadata = rbind(bmsd, Jan_bmsd)
+NewDF <- merge(PhylumCount, Metadata, by="SampleID", all.x=TRUE, all.y=TRUE)
+NewDF$Chlorophylla <- NULL
+NewDF$BA <- NULL
+NewDF$BP <- NULL
+NewDF <- na.omit(NewDF)
+
+#write.csv(NewDF, file = "C://Users//Moana//Documents//Uni//2015//ECOL491//All data//data//S_OTUMetadata.csv", row.names=FALSE)
+
+
+PhylumCount2 = agg.phylum
+NewDF2 <- merge(PhylumCount2, Metadata, by="SampleID", all.x=TRUE, all.y=TRUE)
+NewDF2$Chlorophylla <- NULL
+NewDF2$BA <- NULL
+NewDF2$BP <- NULL
+NewDF2 <- na.omit(NewDF2)
+
+#write.csv(NewDF2, file = "C://Users//Moana//Documents//Uni//2015//ECOL491//All data//data//S_OTUMetadataLayout2.csv", row.names=FALSE)
+
+Fulltax=pOTU[,c(86:92,1)]#Isolate the taxonomy data
+#Fulltax2=unique(Fulltax)#Seems to be unnesessary
+NewDF3 <- merge(NewDF2, Fulltax, by="OTU", all.x=TRUE, all.y=TRUE)
+#write.csv(NewDF3, file = "C:/Users/Moana/Documents/Uni/2016/Publication/paper/Fulltaxonomy.csv", row.names=FALSE)
+
+
+```
