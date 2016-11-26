@@ -95,7 +95,7 @@ sample_data(KN_phyloseq)$Month = factor(sample_data(KN_phyloseq)$Month, levels =
 
 #subset samples by experiment and calculate alpha
 ```{r}
-Exp1_phyloseq = complete_phyloseq
+Exp1_phyloseq = KN_phyloseq
 #Exp1_phyloseq = subset_samples(complete_phyloseq, Exp1 == "yes")
 alpha_summary_Exp1 <- estimate_richness(Exp1_phyloseq, measures = c("Observed", "Shannon")) #gives a tabel of important numbers for when you are writing up
 
