@@ -4,8 +4,8 @@ rm(list=ls())
 library(phyloseq)
 library(ggplot2)
 
-otutable_biom_file <- paste("C:/Users/Moana/Documents/Uni/2015/ECOL491/All data/data/", "merged_otu_table.biom", sep = "")
-map_file <- paste("C:/Users/Moana/Documents/Uni/2015/ECOL491/All data/data/", "Horizontal_Transect.txt", sep = "")
+otutable_biom_file <- paste("C:/Users/Moana/Documents/Uni/2016/Publication/Data from Rachel", "1000_merged_otu_table_json.biom", sep = "")
+map_file <- paste("C:/Users/Moana/Documents/Uni/2016/Publication/Data from Rachel", "Ecotone_map.txt", sep = "")
 
 ```
 
@@ -92,103 +92,6 @@ sample_data(KN_phyloseq)$Month = factor(sample_data(KN_phyloseq)$Month, levels =
 ```
 
 ####################################################################################################################
-
-```{r Load_libraries_and_data}
-
-Jan_otutable_biom_file <- paste("C:/Users/Moana/Documents/Uni/2015/ECOL491/All data/data/", "Jan_8000_merged_otu_table.biom", sep = "")
-Jan_map_file <- paste("C:/Users/Moana/Documents/Uni/2015/ECOL491/All data/data/", "JanHorizontal_Transect.txt", sep = "")
-
-```
-
-
-# Now import the .biom-formatted otu_table-tax_table file.
-```{r}
-Jan_biom_otu_tax <- import_biom(Jan_otutable_biom_file)
-
-# Add sample data to the dataset using merge
-Jan_bmsd <- import_qiime_sample_data(Jan_map_file)
-class(Jan_bmsd)
-dim(Jan_bmsd)#dimensions of Jan_bmsd (what is the structure of the map file?) Should match the number of samples and variables
-sample_data(Jan_bmsd)
-Jan_biom_otu_tax
-
-#Order levels
-Jan_bmsd$Month <- factor(Jan_bmsd$Month, levels = c("January", "June", "July", "December", "March", "April"))
-Jan_bmsd$Water_mass_PCA <- factor(Jan_bmsd$Water_mass_PCA, levels = c("NW", "STW", "FRONT", "SAW"))
-
-#Merge into phyloseq format
-Jan_phyloseq <- merge_phyloseq(Jan_biom_otu_tax, Jan_bmsd)
-Jan_phyloseq
-```
-
-#####Create average result for multiple rarefaction by transforming data using (divide by 10) and check counts per sample
-```{r Create average result for multiple rarefaction by transforming data using (divide by 10), results='markup'}
-Jan_phyloseq = transform_sample_counts(Jan_phyloseq, function(x) x/10)
-sample_sums(Jan_phyloseq)
-```
-
-##### Round and confirm count number
-```{r Round and confirm count number, results='markup'}
-Jan_phyloseq = transform_sample_counts(Jan_phyloseq, round)
-sample_sums(Jan_phyloseq)
-#check that all numbers are integers
-otu_table_df<- as.data.frame(otu_table(Jan_phyloseq))
-```
-
-Check that all OTUs have representative counts  
-For here taxa = OTU  
-__Commands interpretation:__  
-_Total number of taxa in dataset:_ sum(taxa_sums(Jan_phyloseq) > 0)   
-
-_Any taxa with no hits:_ any(taxa_sums(Jan_phyloseq)== 0)
-
-```{r identify taxa with only zeros, results='markup', echo=TRUE}
-sum(taxa_sums(Jan_phyloseq) > 0)
-any(taxa_sums(Jan_phyloseq)== 0)
-sum(taxa_sums(Jan_phyloseq) == 0)
-any(taxa_sums(Jan_phyloseq) > 1)
-sum(taxa_sums(Jan_phyloseq) > 1)
-any(taxa_sums(Jan_phyloseq) < 1)
-sum(taxa_sums(Jan_phyloseq) < 1)
-```
-
-#####Prune taxa with less than 1 count and check taxa numbers again
-```{r  Save original file and create new file with only present (no zeroes) taxa, results='markup', echo=TRUE}
-
-#Create new file with only present (no zeroes) taxa
-
-Jan_phyloseq = prune_taxa(taxa_sums(Jan_phyloseq) > 1, Jan_phyloseq)
-any(sample_sums(Jan_phyloseq) == 0)
-any(sample_sums(Jan_phyloseq) > 0)
-sum(taxa_sums(Jan_phyloseq) > 0)
-any(sample_sums(Jan_phyloseq) < 1)
-sum(taxa_sums(Jan_phyloseq) < 1)
-```
-
-#plot across variable
-```{r}
-sample_variables(Jan_phyloseq)
-```
-
-#rename Ranks
-```{r}
-colnames(tax_table(Jan_phyloseq)) = c("Domain", "Phylum", "Class", "Order", "Family", "Genus", "Species")
-
-```
-
-#Order levels
-```{r}
-sample_data(Jan_phyloseq)$Water_mass_PCA = factor(sample_data(Jan_phyloseq)$Water_mass_PCA, levels = c("NW", "STW", "FRONT", "SAW"))
-sample_data(Jan_phyloseq)$Month = factor(sample_data(Jan_phyloseq)$Month, levels = c("January", "June", "July", "December", "March", "April"))
-```
-
-####################################################################################################################
-
-#Merge files
-```{r}
-complete_phyloseq = merge_phyloseq(KN_phyloseq, Jan_phyloseq)
-```
-
 
 #subset samples by experiment and calculate alpha
 ```{r}
