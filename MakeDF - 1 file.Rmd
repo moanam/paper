@@ -23,7 +23,7 @@ biom_otu_tax
 
 #Order levels
 bmsd$Month <- factor(bmsd$Month, levels = c("January", "June", "July", "December", "March", "April"))
-bmsd$Water_mass_PCA <- factor(bmsd$Water_mass_PCA, levels = c("NW", "STW", "FRONT", "SAW"))
+bmsd$Water_mass_PCA <- factor(bmsd$Water_mass_PCA, levels = c("NW", "STW", "FRONT", "SAW", "DEEP"))
 
 #Merge into phyloseq format
 KN_phyloseq <- merge_phyloseq(biom_otu_tax, bmsd)
@@ -87,7 +87,7 @@ colnames(tax_table(KN_phyloseq)) = c("Domain", "Phylum", "Class", "Order", "Fami
 
 #Order levels
 ```{r}
-sample_data(KN_phyloseq)$Water_mass_PCA = factor(sample_data(KN_phyloseq)$Water_mass_PCA, levels = c("NW", "STW", "FRONT", "SAW"))
+sample_data(KN_phyloseq)$Water_mass_PCA = factor(sample_data(KN_phyloseq)$Water_mass_PCA, levels = c("NW", "STW", "FRONT", "SAW", "DEEP"))
 sample_data(KN_phyloseq)$Month = factor(sample_data(KN_phyloseq)$Month, levels = c("January", "June", "July", "December", "March", "April"))
 ```
 
