@@ -154,7 +154,7 @@ for (i in 1:length(reps)){
   temp.abs.subset.names = get(paste(replicate, ".rel.subset.names", sep="")) #Names of all the oTUs to be used in the heat map for that figure. Includes the changing OTUs across everything, but only those actually found in the water mass
   temp.abs.subset = get(paste("dat.", replicate, ".abs", sep="")) #OTUs and abundances (table)
   
-  smoothResults = medSmoothOTUs(temp.abs.subset.names, dat.M1.abs, dat.M2.abs, dat.M3.abs, dat.M4.abs) #medSmoothOTUs is Manoshi's function to calculate median, smoothed trajectories for all OTUs. Maybe this is why the plots are so similar and I should just call the one replicate I'm plotting each time?
+  smoothResults = medSmoothOTUs(temp.abs.subset.names, dat.M1.abs, dat.M2.abs, dat.M3.abs, dat.M4.abs) #medSmoothOTUs is Manoshi's function to calculate median, smoothed trajectories for all OTUs. Maybe this is why the plots are so similar and I should just call the one replicate I'm plotting each time? ### The output of smoothResults is the same for each water mass!!!
   #   smoothResults = smoothOTUs(temp.abs.subset.names, temp.abs.subset)
   temp.abs.subset.smooth = smoothResults[[1]]
   temp.abs.subset.smooth.norm = smoothResults[[2]]
