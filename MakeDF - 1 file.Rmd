@@ -4,8 +4,8 @@ rm(list=ls())
 library(phyloseq)
 library(ggplot2)
 
-otutable_biom_file <- paste("C:/Users/Moana/Documents/Uni/2016/Publication/Data from Rachel", "1000_merged_otu_table_json.biom", sep = "")
-map_file <- paste("C:/Users/Moana/Documents/Uni/2016/Publication/Data from Rachel", "Ecotone_map.txt", sep = "")
+otutable_biom_file <- paste("C:/Users/Moana/Documents/Uni/2016/Publication/Data from Rachel/", "1000_merged_otu_table_json.biom", sep = "")
+map_file <- paste("C:/Users/Moana/Documents/Uni/2016/Publication/Data from Rachel/", "Ecotone_map.txt", sep = "")
 
 ```
 
