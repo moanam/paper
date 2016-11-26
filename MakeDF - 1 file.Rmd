@@ -22,8 +22,8 @@ sample_data(bmsd)
 biom_otu_tax
 
 #Order levels
-bmsd$Month <- factor(bmsd$Month, levels = c("January", "June", "July", "December", "March", "April"))
-bmsd$Water_mass_PCA <- factor(bmsd$Water_mass_PCA, levels = c("NW", "STW", "FRONT", "SAW", "DEEP"))
+#bmsd$Month <- factor(bmsd$Month, levels = c("January", "June", "July", "December", "March", "April"))
+#bmsd$Water_mass_PCA <- factor(bmsd$Water_mass_PCA, levels = c("NW", "STW", "FRONT", "SAW", "DEEP"))
 
 #Merge into phyloseq format
 KN_phyloseq <- merge_phyloseq(biom_otu_tax, bmsd)
@@ -87,8 +87,8 @@ colnames(tax_table(KN_phyloseq)) = c("Domain", "Phylum", "Class", "Order", "Fami
 
 #Order levels
 ```{r}
-sample_data(KN_phyloseq)$Water_mass_PCA = factor(sample_data(KN_phyloseq)$Water_mass_PCA, levels = c("NW", "STW", "FRONT", "SAW", "DEEP"))
-sample_data(KN_phyloseq)$Month = factor(sample_data(KN_phyloseq)$Month, levels = c("January", "June", "July", "December", "March", "April"))
+#sample_data(KN_phyloseq)$Water_mass_PCA = factor(sample_data(KN_phyloseq)$Water_mass_PCA, levels = c("NW", "STW", "FRONT", "SAW", "DEEP"))
+#sample_data(KN_phyloseq)$Month = factor(sample_data(KN_phyloseq)$Month, levels = c("January", "June", "July", "December", "March", "April"))
 ```
 
 ####################################################################################################################
@@ -141,7 +141,8 @@ PhylumCount = data
 # write.csv(bmsd, file = "C://Users//Moana//Documents//Uni//2015//ECOL491//All data//data//bmsdMetadata.csv", row.names=FALSE)
 # write.csv(data, file = "C://Users//Moana//Documents//Uni//2015//ECOL491//All data//data//dataPhyla.csv", row.names=FALSE)
 
-Metadata = read.csv("C://Users//Moana//Documents//Uni//2015//ECOL491//All data//data//bmsdMetadata.csv", header = TRUE)
+Metadata = read.table("C://Users/Moana/Documents/Uni/2016/Publication/Data from Rachel/Ecotone_map.txt", header = TRUE)
+
 # PhylumCount = read.csv("C://Users//Moana//Documents//Uni//2015//ECOL491//All data//data//dataPhyla.csv", header = TRUE)
 
 NewDF <- merge(PhylumCount, Metadata, by="SampleID")#, all.x=TRUE, all.y=TRUE)
