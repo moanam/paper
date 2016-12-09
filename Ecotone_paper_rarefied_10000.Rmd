@@ -1,0 +1,403 @@
+---
+title: "Munida_ecotone_timeseries_paper"
+author: "Sergio E. Morales"
+date: "24 November 2016"
+output:
+  html_document:
+    self_contained: no
+---
+
+#Analysis and summary of results for Ecotone paper
+
+###Pre-processing summary
+  All data was processed in Qiime, clustered at 97% sequence similarity and assigned taxonomy against SILVA 119. Libraries were subsampled and rarefied (to 10000 reads) ten times.  OTU tables generated were ten combined and the new data used for downstream analysis in R as shown below.
+
+```{r global_options, echo=FALSE, results='hide'}
+library(knitr)
+knitr::opts_chunk$set(fig.width=12, fig.height=8, fig.align='center', results='hide', echo=FALSE, warning=FALSE, message=FALSE, dev=c('pdf', 'png'), cache=FALSE)
+```
+
+```{r}
+knitr::opts_knit$set(base.dir='/Users/sergiomorales/Dropbox/Moana_Time_Series/Manuscript #1_Surface Time series/Ecotones paper/R_analysis/', fig.path='/Users/sergiomorales/Dropbox/Moana_Time_Series/Manuscript #1_Surface Time series/Ecotones paper/R_analysis/Figures_10000/')
+```
+
+
+```{r Load libraries and data}
+library(phyloseq)  
+library(ggplot2)
+library(plyr)
+library(dplyr)
+library(scales)
+library(reshape)
+library(reshape2)
+library(RColorBrewer)
+library(grid)
+
+uzdir <- "/Users/sergiomorales/Dropbox/Moana_Time_Series/Manuscript #1_Surface Time series/Ecotones paper/R_analysis/"
+otutable_biom_file <- paste("/Users/sergiomorales/Dropbox/Moana_Time_Series/Manuscript #1_Surface Time series/Ecotones paper/R_analysis/", "10000_merged_otu_table_json.biom", sep = "")
+map_file <- paste("/Users/sergiomorales/Dropbox/Moana_Time_Series/Manuscript #1_Surface Time series/Ecotones paper/R_analysis/", "Ecotone_map.txt", sep = "")
+
+```
+
+```{r Create phyloseq object}
+
+# Now import the .biom-formatted otu_table-tax_table file.
+
+biom_otu_tax <- import_biom(otutable_biom_file)
+
+# Add sample data to the dataset using merge
+bmsd <- import_qiime_sample_data(map_file)
+class(bmsd)
+dim(bmsd)
+sample_data(bmsd)
+biom_otu_tax
+
+
+#Merge into phyloseq format
+MM_phyloseq <- merge_phyloseq(biom_otu_tax, bmsd)
+MM_phyloseq
+sample_sums(MM_phyloseq)
+
+#Save original phyloseq file
+MM_phyloseq0 = MM_phyloseq
+```
+
+#####Create average result for multiple rarefaction by transforming data using (divide by 10) and check counts per sample
+```{r Create average result for multiple rarefaction by transforming data using (divide by 10), results='markup'}
+MM_phyloseq = transform_sample_counts(MM_phyloseq, function(x) x/10)
+sample_sums(MM_phyloseq)
+```
+
+##### Round and confirm count number
+```{r Round and confirm count number, results='markup'}
+MM_phyloseq = transform_sample_counts(MM_phyloseq, round)
+sample_sums(MM_phyloseq)
+MM_phyloseq = prune_samples(sample_sums(MM_phyloseq)>=1, MM_phyloseq)
+sample_sums(MM_phyloseq)
+
+
+#check that all numbers are integers
+otu_table_df<- as.data.frame(otu_table(MM_phyloseq))
+```
+
+Check that all OTUs have representative counts  
+For here taxa = OTU  
+__Commands interpretation:__  
+_Total number of taxa in dataset:_ sum(taxa_sums(MM_phyloseq) > 0)   
+
+_Any taxa with no hits:_ any(taxa_sums(MM_phyloseq)== 0)
+
+```{r identify taxa with only zeros, results='markup', echo=TRUE}
+sum(taxa_sums(MM_phyloseq) > 0)
+any(taxa_sums(MM_phyloseq)== 0)
+sum(taxa_sums(MM_phyloseq) == 0)
+any(taxa_sums(MM_phyloseq) > 1)
+sum(taxa_sums(MM_phyloseq) > 1)
+any(taxa_sums(MM_phyloseq) < 1)
+sum(taxa_sums(MM_phyloseq) < 1)
+```
+
+#####Prune taxa with less than 1 count and check taxa numbers again
+```{r  Save original file and create new file with only present (no zeroes) taxa, results='markup', echo=TRUE}
+
+#Create new file with only present (no zeroes) taxa
+
+MM_phyloseq = prune_taxa(taxa_sums(MM_phyloseq) > 1, MM_phyloseq)
+any(sample_sums(MM_phyloseq) == 0)
+any(sample_sums(MM_phyloseq) > 0)
+sum(taxa_sums(MM_phyloseq) > 0)
+any(sample_sums(MM_phyloseq) < 1)
+sum(taxa_sums(MM_phyloseq) < 1)
+```
+
+###Compare sequences per sample or OTU
+```{r Compare sequences per sample or OTU}
+readsumsdf = data.frame(nreads = sort(taxa_sums(MM_phyloseq), TRUE), sorted = 1:ntaxa(MM_phyloseq), 
+                        type = "OTU")
+readsumsdf = rbind(readsumsdf, data.frame(nreads = sort(sample_sums(MM_phyloseq), 
+                                                        TRUE), sorted = 1:nsamples(MM_phyloseq), type = "Samples"))
+title = "Total number of reads"
+p = ggplot(readsumsdf, aes(x = sorted, y = nreads)) + geom_bar(stat = "identity")
+p + ggtitle(title) + scale_y_log10() + facet_wrap(~type, 1, scales = "free")
+```
+
+```{r}
+sample_variables(MM_phyloseq)
+```
+
+```{r Attached OTU ID}
+tax_table(MM_phyloseq) <- cbind(tax_table(MM_phyloseq), OTU=taxa_names(MM_phyloseq))
+```
+
+```{r Rename Ranks}
+colnames(tax_table(MM_phyloseq)) = c("Domain", "Phylum", "Class", "Order", "Family", "Genus", "Species", "OTU")
+tax_table(MM_phyloseq) =gsub("D_1__", "", tax_table(MM_phyloseq))
+```
+
+# Subset samples and only keep surface samples
+```{r Subset for surface}
+MM_surf_10000_phyloseq = subset_samples(MM_phyloseq, Depth == "0")
+sample_sums(MM_surf_10000_phyloseq)
+MM_surf_10000_phyloseq
+```
+
+```{r Calculate Alpha diversity}
+alpha_summary <- estimate_richness(MM_surf_10000_phyloseq, measures = c("Observed", "Shannon"))
+#combine with metadata
+alpha_meta <- data.frame(alpha_summary, sample_data(MM_surf_10000_phyloseq))
+```
+
+```{r Summarize richness data and calcuate SE SD CI mean}
+library(Rmisc)
+# mean will be calculated from the Observed richness column by all the variables listed in groupvars.
+tgc_Rich <- summarySE(alpha_meta, measurevar="Observed", groupvars=c("Month","Year", "Time", "Water_mass_PCA"))
+tgc_Rich
+
+# repeat for Shannon
+tgc_S <- summarySE(alpha_meta, measurevar="Shannon", groupvars=c("Month","Year", "Time", "Water_mass_PCA"))
+tgc_S
+
+
+#rename headers to differentiate results for Shannon and Observed
+colnames(tgc_Rich) = c("Month", "Year", "Time", "Water_mass_PCA", "N_Rich", "Observed", "sd_observed", "se_observed", "ci_observed")
+
+colnames(tgc_S) = c("Month", "Year", "Time", "Water_mass_PCA", "N_Shannon", "Shannon", "sd_shannon", "se_shannon", "ci_shannon")
+
+#combine results
+tgc <- merge(tgc_S,tgc_Rich,by=c("Month", "Year", "Time", "Water_mass_PCA"))
+
+tgc$Water_mass_PCA <- factor(tgc$Water_mass_PCA,
+                              levels = c("NW", "STW", "FRONT", "SAW"))
+
+tgc$Month <- factor(tgc$Month,
+                              levels = c("January", "June", "July", "December", "March", "April"))
+
+```
+
+```{r Create line and point plot}
+pd <- position_dodge(0.1) # move dots .01 to the left and right to avoid overlap
+
+p<- ggplot(tgc, aes(x=Time, y=Observed, group=as.factor(Water_mass_PCA))) + geom_errorbar(aes(ymin=Observed-se_observed, ymax=Observed+se_observed), colour="black", position=pd) +
+    geom_line(aes(colour=Water_mass_PCA),position=pd) +
+    geom_point(position=pd, size=2, shape=21, fill="black") + # 21 is filled circle
+    xlab("Time (days since start of study)") +
+    ylab("OTU Richness") +
+    expand_limits(y=0) +                        # Expand y range so plot starts in from edge
+    scale_y_continuous() +
+    theme_bw() +
+    theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())  
+
+p + labs(colour = "Water mass")
+
+ggsave("/Users/sergiomorales/Dropbox/Moana_Time_Series/Manuscript #1_Surface Time series/Ecotones paper/R_analysis/Figures_10000/Richness.pdf",width=8,height=4)
+```
+
+
+```{r Facet by water mass}
+
+ggplot(tgc, aes(x=Time, y=Observed, group=as.factor(Water_mass_PCA))) + geom_errorbar(aes(ymin=Observed-se_observed, ymax=Observed+se_observed), colour="black", position=pd) + facet_grid(Water_mass_PCA ~ ., drop = TRUE, space = "fixed", scales = "free") +
+    geom_line() +
+    geom_point(position=pd, size=3, shape=21, aes(fill=Month)) + # 21 is filled circle
+    xlab("Time (days since start of study)") +
+    ylab("OTU Richness") +
+    expand_limits(y=0) +                        # Expand y range so plot starts in from edge
+    scale_y_continuous() +        
+    theme_bw() +
+    theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) + labs(colour = "Water mass") 
+
+ggsave("/Users/sergiomorales/Dropbox/Moana_Time_Series/Manuscript #1_Surface Time series/Ecotones paper/R_analysis/Figures_10000/Richness_by_mass.pdf",width=8,height=8)
+```
+
+# ```{r Facet by time}
+# 
+# ggplot(tgc, aes(x=Water_mass_PCA, y=Observed, group=as.factor(Month))) + geom_errorbar(aes(ymin=Observed-se_observed, ymax=Observed+se_observed), colour="black", position=pd) + facet_grid(Month ~ ., drop = TRUE, space = "fixed", scales = "free") +
+#     geom_line(aes(colour=Month),position=pd) +
+#     geom_point(position=pd, size=2, shape=21, fill="black") + # 21 is filled circle
+#     xlab("Water mass") +
+#     ylab("OTU Richness") +                        # Expand y range so plot starts in from edge
+#     scale_y_continuous() +        
+#     theme_bw() +
+#     theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) + expand_limits(y = c(90, 300))           
+# ggsave("/Users/sergiomorales/Downloads/Richness_by_time.pdf",width=8,height=12)
+#```
+
+
+#NMDS ordination test
+```{r NMDS ordination Bray Distance}
+library(vegan)
+library(ggrepel)
+library(ggplot2)
+
+NMDS.ord <- ordinate(MM_surf_10000_phyloseq, "NMDS", "bray")
+
+sampleplot = plot_ordination(MM_surf_10000_phyloseq, NMDS.ord, type = "samples", color = "Month", shape = "Water_mass_PCA") + scale_colour_manual(values=c("black", "blue", "red", "yellow", "green", "brown"))
+
+library(grid)
+
+my_grob = grobTree(textGrob("Stress = 0.14", x=0.1,  y=0.95, hjust=0,
+                            gp=gpar(col="Black", fontsize=18, fontface="italic")))
+
+
+p = sampleplot + geom_point(size = 5) + theme(text = element_text(size = 16)) + theme(axis.title.x = element_text(face="bold",size=16),
+                                          axis.text.x = element_text(angle=0, colour = "black", vjust=1, hjust = 1, size=14),
+                                          axis.text.y = element_text(colour = "black", size=14),
+                                          axis.title.y = element_text(face="bold",size=14),
+                                          plot.title = element_text(size = 18),
+                                          legend.title =element_text(size = 16),
+                                          legend.text = element_text(size = 16),
+                                          legend.position="right",
+                                          legend.key.size = unit(0.50, "cm"),
+                                          strip.text.x = element_text(size=12, face="bold"),
+                                          strip.text.y = element_text(size=12, face="bold"),
+                                          panel.background = element_blank(),
+                                          panel.border = element_rect(fill = NA, colour = "black"),
+                                          strip.background = element_rect(colour="black")) + annotation_custom(my_grob)
+
+p
+
+ggsave("/Users/sergiomorales/Dropbox/Moana_Time_Series/Manuscript #1_Surface Time series/Ecotones paper/R_analysis/Figures_10000/NMDS.pdf",width=12,height=8)
+```
+
+```{r NMDS ordination Stressplot Bray Distance}
+stressplot(NMDS.ord)
+```
+
+
+####NOT UPDATED IGNORE FROMA THIS POINT ON>
+
+
+# Plot Alpha diversity (Richness and Shannon) 
+```{r Plot Alpha diversity}
+plot_richness(MM_surf_10000_phyloseq, x = "Time",measures = c("Observed", "Shannon"), color="Water_mass_PCA") + geom_line() + theme(text = element_text(size = 18)) + theme(axis.title.x = element_blank(),
+                                          axis.text.x = element_text(angle=0, colour = "black", vjust=1, hjust = 0.5, size=18),
+                                          axis.text.y = element_text(colour = "black", size=18),
+                                          axis.title.y = element_text(face="bold",size=16),
+                                          plot.title = element_text(size = 18),
+                                          legend.title =element_text(size = 18),
+                                          legend.text = element_text(size = 18),
+                                          legend.position="right",
+                                          legend.key.size = unit(0.50, "cm"),
+                                          strip.text.x = element_text(size=18, face="bold"),
+                                          strip.text.y = element_text(size=18, face="bold"),
+                                          panel.background = element_blank(),
+                                          panel.border = element_rect(fill = NA, colour = "black"),
+                                          strip.background = element_rect(colour="black")) 
+
+ggsave("/Users/sergiomorales/Dropbox/Moana_Time_Series/Manuscript #1_Surface Time series/Ecotones paper/R_analysis/Figures_10000/alpha_test_plot.pdf", width=12,height=4)
+```
+
+
+#From here in only Shannon
+
+```{r Create line and point plot for Shannon}
+pd <- position_dodge(0.1) # move dots .01 to the left and right to avoid overlap
+
+p<- ggplot(tgc, aes(x=Time, y=Shannon, group=as.factor(Water_mass_PCA))) + geom_errorbar(aes(ymin=Shannon-se_shannon, ymax=Shannon+se_shannon), colour="black", position=pd) +
+  geom_line(aes(colour=Water_mass_PCA),position=pd) +
+  geom_point(position=pd, size=2, shape=21, fill="black") + # 21 is filled circle
+  xlab("Time (days since start of study)") +
+  ylab("Shannon") +
+  expand_limits(y=0) +                        # Expand y range so plot starts in from edge
+  scale_y_continuous() +
+  theme_bw() +
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())  
+
+p + labs(colour = "Water mass")
+
+ggsave("/Users/sergiomorales/Dropbox/Moana_Time_Series/Manuscript #1_Surface Time series/Ecotones paper/R_analysis/Figures_10000/Shannon.pdf",width=8,height=4)
+```
+
+
+```{r Facet Shannon by water mass}
+
+ggplot(tgc, aes(x=Time, y=Shannon, group=as.factor(Water_mass_PCA))) + geom_errorbar(aes(ymin=Shannon-se_shannon, ymax=Shannon+se_shannon), colour="black", position=pd) + facet_grid(Water_mass_PCA ~ ., drop = TRUE, space = "fixed", scales = "free") +
+  geom_line() +
+  geom_point(position=pd, size=3, shape=21, aes(fill=Month)) + # 21 is filled circle
+  xlab("Time (days since start of study)") +
+  ylab("Shannon") +
+  expand_limits(y=0) +                        # Expand y range so plot starts in from edge
+  scale_y_continuous() +        
+  theme_bw() +
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) + labs(colour = "Water mass") 
+
+ggsave("/Users/sergiomorales/Dropbox/Moana_Time_Series/Manuscript #1_Surface Time series/Ecotones paper/R_analysis/Figures_10000/Shannon_by_mass.pdf",width=8,height=8)
+```
+
+#From here on re-calculated using Station as X
+
+```{r Summarize richness data and calcuate SE SD CI mean for transect}
+library(Rmisc)
+# mean will be calculated from the Observed richness column by all the variables listed in groupvars.
+tgc_Rich_tran <- summarySE(alpha_meta, measurevar="Observed", groupvars=c("Month","Year", "Time", "Water_mass_PCA", "Published_station"))
+tgc_Rich_tran
+
+# repeat for Shannon
+tgc_S_tran <- summarySE(alpha_meta, measurevar="Shannon", groupvars=c("Month","Year", "Time", "Water_mass_PCA", "Published_station"))
+tgc_S_tran
+
+
+#rename headers to differentiate results for Shannon and Observed
+colnames(tgc_Rich_tran) = c("Month", "Year", "Time", "Water_mass_PCA", "Published_station", "N_Rich", "Observed", "sd_observed", "se_observed", "ci_observed")
+
+colnames(tgc_S_tran) = c("Month", "Year", "Time", "Water_mass_PCA", "Published_station", "N_Shannon", "Shannon", "sd_shannon", "se_shannon", "ci_shannon")
+
+#combine results
+tgc_tran <- merge(tgc_S_tran,tgc_Rich_tran,by=c("Month", "Year", "Time", "Water_mass_PCA", "Published_station"))
+
+tgc_tran$Water_mass_PCA <- factor(tgc_tran$Water_mass_PCA,
+                             levels = c("NW", "STW", "FRONT", "SAW"))
+
+tgc_tran$Month <- factor(tgc_tran$Month,
+                    levels = c("January", "June", "July", "December", "March", "April"))
+
+```
+
+```{r Create line and point plot for transect}
+pd <- position_dodge(0.1) # move dots .01 to the left and right to avoid overlap
+
+p<- ggplot(tgc_tran, aes(x=Published_station, y=Observed, group=as.factor(Time))) + geom_errorbar(aes(ymin=Observed-se_observed, ymax=Observed+se_observed), colour="black", position=pd) +
+  geom_line(aes(colour=Water_mass_PCA),position=pd) +
+  geom_point(position=pd, size=2, shape=21, fill="black") + # 21 is filled circle
+  xlab("Station") +
+  ylab("OTU Richness") +
+  expand_limits(y=0) +                        # Expand y range so plot starts in from edge
+  scale_y_continuous() +
+  theme_bw() +
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())  
+
+p + labs(colour = "Water mass")
+
+ggsave("/Users/sergiomorales/Dropbox/Moana_Time_Series/Manuscript #1_Surface Time series/Ecotones paper/R_analysis/Figures_10000/Richness_bystation.pdf",width=8,height=4)
+```
+
+
+```{r Create line and point plot for transect by time}
+pd <- position_dodge(0.1) # move dots .01 to the left and right to avoid overlap
+
+p<- ggplot(tgc_tran, aes(x=Published_station, y=Observed, group=as.factor(Time))) + geom_errorbar(aes(ymin=Observed-se_observed, ymax=Observed+se_observed), colour="black", position=pd) +
+  geom_line(aes(colour=as.factor(Time)),position=pd) +
+  geom_point(position=pd, size=2, shape=21, fill="black") + # 21 is filled circle
+  xlab("Station") +
+  ylab("OTU Richness") +
+  expand_limits(y=0) +                        # Expand y range so plot starts in from edge
+  scale_y_continuous() +
+  theme_bw() +
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())  
+
+p + labs(colour = "Water mass")
+
+ggsave("/Users/sergiomorales/Dropbox/Moana_Time_Series/Manuscript #1_Surface Time series/Ecotones paper/R_analysis/Figures_10000/Richness_bystation_time.pdf",width=8,height=4)
+```
+
+```{r Facet by time by station}
+
+ggplot(tgc_tran, aes(x=Published_station, y=Observed, group=as.factor(Time))) + geom_errorbar(aes(ymin=Observed-se_observed, ymax=Observed+se_observed), colour="black", position=pd) + facet_grid(Time ~ ., drop = TRUE, space = "fixed", scales = "free") +
+    geom_line(aes(colour=Water_mass_PCA),position=pd) +
+    geom_point(position=pd, size=2, shape=21, fill="black") + # 21 is filled circle
+    xlab("Station") +
+    ylab("OTU Richness") +                        # Expand y range so plot starts in from edge
+    scale_y_continuous() +        
+    theme_bw() +
+    theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) + expand_limits(y = c(90, 300))           
+ggsave("/Users/sergiomorales/Dropbox/Moana_Time_Series/Manuscript #1_Surface Time series/Ecotones paper/R_analysis/Figures_10000/Richness_facettime_bystation.pdf",width=8,height=12)
+```
