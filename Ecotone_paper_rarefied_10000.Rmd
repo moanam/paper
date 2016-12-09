@@ -18,7 +18,7 @@ knitr::opts_chunk$set(fig.width=12, fig.height=8, fig.align='center', results='h
 ```
 
 ```{r}
-knitr::opts_knit$set(base.dir='/Users/sergiomorales/Dropbox/Moana_Time_Series/Manuscript #1_Surface Time series/Ecotones paper/R_analysis/', fig.path='/Users/sergiomorales/Dropbox/Moana_Time_Series/Manuscript #1_Surface Time series/Ecotones paper/R_analysis/Figures_10000/')
+knitr::opts_knit$set(base.dir='/Users/Moana/Dropbox/Moana_Time_Series/Manuscript #1_Surface Time series/Ecotones paper/R_analysis/', fig.path='/Users/Moana/Dropbox/Moana_Time_Series/Manuscript #1_Surface Time series/Ecotones paper/R_analysis/Figures_10000/')
 ```
 
 
@@ -33,9 +33,9 @@ library(reshape2)
 library(RColorBrewer)
 library(grid)
 
-uzdir <- "/Users/sergiomorales/Dropbox/Moana_Time_Series/Manuscript #1_Surface Time series/Ecotones paper/R_analysis/"
-otutable_biom_file <- paste("/Users/sergiomorales/Dropbox/Moana_Time_Series/Manuscript #1_Surface Time series/Ecotones paper/R_analysis/", "10000_merged_otu_table_json.biom", sep = "")
-map_file <- paste("/Users/sergiomorales/Dropbox/Moana_Time_Series/Manuscript #1_Surface Time series/Ecotones paper/R_analysis/", "Ecotone_map.txt", sep = "")
+uzdir <- "/Users/Moana/Dropbox/Moana_Time_Series/Manuscript #1_Surface Time series/Ecotones paper/R_analysis/"
+otutable_biom_file <- paste("/Users/Moana/Dropbox/Moana_Time_Series/Manuscript #1_Surface Time series/Ecotones paper/R_analysis/", "10000_merged_otu_table_json.biom", sep = "")
+map_file <- paste("/Users/Moana/Dropbox/Moana_Time_Series/Manuscript #1_Surface Time series/Ecotones paper/R_analysis/", "Ecotone_map.txt", sep = "")
 
 ```
 
@@ -189,7 +189,7 @@ p<- ggplot(tgc, aes(x=Time, y=Observed, group=as.factor(Water_mass_PCA))) + geom
 
 p + labs(colour = "Water mass")
 
-ggsave("/Users/sergiomorales/Dropbox/Moana_Time_Series/Manuscript #1_Surface Time series/Ecotones paper/R_analysis/Figures_10000/Richness.pdf",width=8,height=4)
+ggsave("C:/Users/Moana/Documents/Uni/2016/Publication/Output/Richness.pdf",width=8,height=4)
 ```
 
 
@@ -205,7 +205,7 @@ ggplot(tgc, aes(x=Time, y=Observed, group=as.factor(Water_mass_PCA))) + geom_err
     theme_bw() +
     theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) + labs(colour = "Water mass") 
 
-ggsave("/Users/sergiomorales/Dropbox/Moana_Time_Series/Manuscript #1_Surface Time series/Ecotones paper/R_analysis/Figures_10000/Richness_by_mass.pdf",width=8,height=8)
+ggsave("C:/Users/Moana/Documents/Uni/2016/Publication/Output/Richness_by_mass.pdf",width=8,height=8)
 ```
 
 # ```{r Facet by time}
@@ -218,7 +218,7 @@ ggsave("/Users/sergiomorales/Dropbox/Moana_Time_Series/Manuscript #1_Surface Tim
 #     scale_y_continuous() +        
 #     theme_bw() +
 #     theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) + expand_limits(y = c(90, 300))           
-# ggsave("/Users/sergiomorales/Downloads/Richness_by_time.pdf",width=8,height=12)
+# ggsave("/Users/Moana/Downloads/Richness_by_time.pdf",width=8,height=12)
 #```
 
 
@@ -255,7 +255,7 @@ p = sampleplot + geom_point(size = 5) + theme(text = element_text(size = 16)) + 
 
 p
 
-ggsave("/Users/sergiomorales/Dropbox/Moana_Time_Series/Manuscript #1_Surface Time series/Ecotones paper/R_analysis/Figures_10000/NMDS.pdf",width=12,height=8)
+ggsave("C:/Users/Moana/Documents/Uni/2016/Publication/Output/NMDS.pdf",width=12,height=8)
 ```
 
 ```{r NMDS ordination Stressplot Bray Distance}
@@ -283,7 +283,7 @@ plot_richness(MM_surf_10000_phyloseq, x = "Time",measures = c("Observed", "Shann
                                           panel.border = element_rect(fill = NA, colour = "black"),
                                           strip.background = element_rect(colour="black")) 
 
-ggsave("/Users/sergiomorales/Dropbox/Moana_Time_Series/Manuscript #1_Surface Time series/Ecotones paper/R_analysis/Figures_10000/alpha_test_plot.pdf", width=12,height=4)
+ggsave("C:/Users/Moana/Documents/Uni/2016/Publication/Output/alpha_test_plot.pdf", width=12,height=4)
 ```
 
 
@@ -304,7 +304,7 @@ p<- ggplot(tgc, aes(x=Time, y=Shannon, group=as.factor(Water_mass_PCA))) + geom_
 
 p + labs(colour = "Water mass")
 
-ggsave("/Users/sergiomorales/Dropbox/Moana_Time_Series/Manuscript #1_Surface Time series/Ecotones paper/R_analysis/Figures_10000/Shannon.pdf",width=8,height=4)
+ggsave("C:/Users/Moana/Documents/Uni/2016/Publication/Output/Shannon.pdf",width=8,height=4)
 ```
 
 
@@ -320,7 +320,7 @@ ggplot(tgc, aes(x=Time, y=Shannon, group=as.factor(Water_mass_PCA))) + geom_erro
   theme_bw() +
   theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) + labs(colour = "Water mass") 
 
-ggsave("/Users/sergiomorales/Dropbox/Moana_Time_Series/Manuscript #1_Surface Time series/Ecotones paper/R_analysis/Figures_10000/Shannon_by_mass.pdf",width=8,height=8)
+ggsave("C:/Users/Moana/Documents/Uni/2016/Publication/Output/Shannon_by_mass.pdf",width=8,height=8)
 ```
 
 #From here on re-calculated using Station as X
@@ -367,7 +367,7 @@ p<- ggplot(tgc_tran, aes(x=Published_station, y=Observed, group=as.factor(Time))
 
 p + labs(colour = "Water mass")
 
-ggsave("/Users/sergiomorales/Dropbox/Moana_Time_Series/Manuscript #1_Surface Time series/Ecotones paper/R_analysis/Figures_10000/Richness_bystation.pdf",width=8,height=4)
+ggsave("C:/Users/Moana/Documents/Uni/2016/Publication/Output/Richness_bystation.pdf",width=8,height=4)
 ```
 
 
@@ -386,7 +386,7 @@ p<- ggplot(tgc_tran, aes(x=Published_station, y=Observed, group=as.factor(Time))
 
 p + labs(colour = "Water mass")
 
-ggsave("/Users/sergiomorales/Dropbox/Moana_Time_Series/Manuscript #1_Surface Time series/Ecotones paper/R_analysis/Figures_10000/Richness_bystation_time.pdf",width=8,height=4)
+ggsave("C:/Users/Moana/Documents/Uni/2016/Publication/Output/Richness_bystation_time.pdf",width=8,height=4)
 ```
 
 ```{r Facet by time by station}
@@ -399,5 +399,5 @@ ggplot(tgc_tran, aes(x=Published_station, y=Observed, group=as.factor(Time))) + 
     scale_y_continuous() +        
     theme_bw() +
     theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) + expand_limits(y = c(90, 300))           
-ggsave("/Users/sergiomorales/Dropbox/Moana_Time_Series/Manuscript #1_Surface Time series/Ecotones paper/R_analysis/Figures_10000/Richness_facettime_bystation.pdf",width=8,height=12)
+ggsave("C:/Users/Moana/Documents/Uni/2016/Publication/Output/Richness_facettime_bystation.pdf",width=8,height=12)
 ```
