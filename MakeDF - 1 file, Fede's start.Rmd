@@ -1,0 +1,229 @@
+```{r global_options, echo=FALSE, results='hide'}
+library(knitr)
+knitr::opts_chunk$set(fig.width=12, fig.height=8, fig.align='center', results='hide', echo=FALSE, warning=FALSE, message=FALSE, dev=c('pdf', 'png'), cache=FALSE)
+```
+
+```{r}
+knitr::opts_knit$set(base.dir='/Users/Moana/Dropbox/Moana_Time_Series/Manuscript #1_Surface Time series/Ecotones paper/R_analysis/', fig.path='/Users/Moana/Dropbox/Moana_Time_Series/Manuscript #1_Surface Time series/Ecotones paper/R_analysis/Figures_10000/')
+```
+
+
+```{r Load libraries and data}
+library(phyloseq)  
+library(ggplot2)
+library(plyr)
+library(dplyr)
+library(scales)
+library(reshape)
+library(reshape2)
+library(RColorBrewer)
+library(grid)
+
+uzdir <- "/Users/Moana/Dropbox/Moana_Time_Series/Manuscript #1_Surface Time series/Ecotones paper/R_analysis/"
+otutable_biom_file <- paste("/Users/Moana/Dropbox/Moana_Time_Series/Manuscript #1_Surface Time series/Ecotones paper/R_analysis/", "10000_merged_otu_table_json.biom", sep = "")
+map_file <- paste("/Users/Moana/Dropbox/Moana_Time_Series/Manuscript #1_Surface Time series/Ecotones paper/R_analysis/", "Ecotone_map.txt", sep = "")
+
+```
+
+```{r Create phyloseq object}
+
+# Now import the .biom-formatted otu_table-tax_table file.
+
+biom_otu_tax <- import_biom(otutable_biom_file)
+
+# Add sample data to the dataset using merge
+bmsd <- import_qiime_sample_data(map_file)
+class(bmsd)
+dim(bmsd)
+sample_data(bmsd)
+biom_otu_tax
+
+
+#Merge into phyloseq format
+MM_phyloseq <- merge_phyloseq(biom_otu_tax, bmsd)
+MM_phyloseq
+sample_sums(MM_phyloseq)
+
+#Save original phyloseq file
+MM_phyloseq0 = MM_phyloseq
+```
+
+#####Create average result for multiple rarefaction by transforming data using (divide by 10) and check counts per sample
+```{r Create average result for multiple rarefaction by transforming data using (divide by 10), results='markup'}
+MM_phyloseq = transform_sample_counts(MM_phyloseq, function(x) x/10)
+sample_sums(MM_phyloseq)
+```
+
+##### Round and confirm count number
+```{r Round and confirm count number, results='markup'}
+MM_phyloseq = transform_sample_counts(MM_phyloseq, round)
+sample_sums(MM_phyloseq)
+MM_phyloseq = prune_samples(sample_sums(MM_phyloseq)>=1, MM_phyloseq)
+sample_sums(MM_phyloseq)
+
+
+#check that all numbers are integers
+otu_table_df<- as.data.frame(otu_table(MM_phyloseq))
+```
+
+Check that all OTUs have representative counts  
+For here taxa = OTU  
+__Commands interpretation:__  
+_Total number of taxa in dataset:_ sum(taxa_sums(MM_phyloseq) > 0)   
+
+_Any taxa with no hits:_ any(taxa_sums(MM_phyloseq)== 0)
+
+```{r identify taxa with only zeros, results='markup', echo=TRUE}
+sum(taxa_sums(MM_phyloseq) > 0)
+any(taxa_sums(MM_phyloseq)== 0)
+sum(taxa_sums(MM_phyloseq) == 0)
+any(taxa_sums(MM_phyloseq) > 1)
+sum(taxa_sums(MM_phyloseq) > 1)
+any(taxa_sums(MM_phyloseq) < 1)
+sum(taxa_sums(MM_phyloseq) < 1)
+```
+
+#####Prune taxa with less than 1 count and check taxa numbers again
+```{r  Save original file and create new file with only present (no zeroes) taxa, results='markup', echo=TRUE}
+
+#Create new file with only present (no zeroes) taxa
+
+MM_phyloseq = prune_taxa(taxa_sums(MM_phyloseq) > 1, MM_phyloseq)
+any(sample_sums(MM_phyloseq) == 0)
+any(sample_sums(MM_phyloseq) > 0)
+sum(taxa_sums(MM_phyloseq) > 0)
+any(sample_sums(MM_phyloseq) < 1)
+sum(taxa_sums(MM_phyloseq) < 1)
+```
+
+###Compare sequences per sample or OTU
+```{r Compare sequences per sample or OTU}
+readsumsdf = data.frame(nreads = sort(taxa_sums(MM_phyloseq), TRUE), sorted = 1:ntaxa(MM_phyloseq), 
+                        type = "OTU")
+readsumsdf = rbind(readsumsdf, data.frame(nreads = sort(sample_sums(MM_phyloseq), 
+                                                        TRUE), sorted = 1:nsamples(MM_phyloseq), type = "Samples"))
+title = "Total number of reads"
+p = ggplot(readsumsdf, aes(x = sorted, y = nreads)) + geom_bar(stat = "identity")
+p + ggtitle(title) + scale_y_log10() + facet_wrap(~type, 1, scales = "free")
+```
+
+```{r}
+sample_variables(MM_phyloseq)
+```
+
+```{r Attached OTU ID}
+tax_table(MM_phyloseq) <- cbind(tax_table(MM_phyloseq), OTU=taxa_names(MM_phyloseq))
+```
+
+```{r Rename Ranks}
+colnames(tax_table(MM_phyloseq)) = c("Domain", "Phylum", "Class", "Order", "Family", "Genus", "Species", "OTU")
+tax_table(MM_phyloseq) =gsub("D_1__", "", tax_table(MM_phyloseq))
+```
+
+# Subset samples and only keep surface samples
+```{r Subset for surface}
+MM_surf_10000_phyloseq = subset_samples(MM_phyloseq, Depth == "0")
+sample_sums(MM_surf_10000_phyloseq)
+MM_surf_10000_phyloseq
+```
+
+```{r Calculate Alpha diversity}
+alpha_summary <- estimate_richness(MM_surf_10000_phyloseq, measures = c("Observed", "Shannon"))
+#combine with metadata
+alpha_meta <- data.frame(alpha_summary, sample_data(MM_surf_10000_phyloseq))
+```
+
+```{r Summarize richness data and calcuate SE SD CI mean}
+library(Rmisc)
+# mean will be calculated from the Observed richness column by all the variables listed in groupvars.
+tgc_Rich <- summarySE(alpha_meta, measurevar="Observed", groupvars=c("Month","Year", "Time", "Water_mass_PCA"))
+tgc_Rich
+
+# repeat for Shannon
+tgc_S <- summarySE(alpha_meta, measurevar="Shannon", groupvars=c("Month","Year", "Time", "Water_mass_PCA"))
+tgc_S
+
+
+#rename headers to differentiate results for Shannon and Observed
+colnames(tgc_Rich) = c("Month", "Year", "Time", "Water_mass_PCA", "N_Rich", "Observed", "sd_observed", "se_observed", "ci_observed")
+
+colnames(tgc_S) = c("Month", "Year", "Time", "Water_mass_PCA", "N_Shannon", "Shannon", "sd_shannon", "se_shannon", "ci_shannon")
+
+#combine results
+tgc <- merge(tgc_S,tgc_Rich,by=c("Month", "Year", "Time", "Water_mass_PCA"))
+
+tgc$Water_mass_PCA <- factor(tgc$Water_mass_PCA,
+                             levels = c("NW", "STW", "FRONT", "SAW"))
+
+tgc$Month <- factor(tgc$Month,
+                    levels = c("January", "June", "July", "December", "March", "April"))
+
+```
+
+##########################################################################################################################
+
+#Make OTU data frame
+```{r}
+library(ggplot2)
+library(plyr)
+library(scales)
+library(reshape)
+library(RColorBrewer)
+library(grid)
+library(phyloseq)
+
+speciesList <- tapply(sample_names(MM_surf_10000_phyloseq), get_variable(MM_surf_10000_phyloseq, "SampleID"), c) #Makes columns of water mass types and says which samles are found there
+speciesPhyseq <- lapply(speciesList, prune_samples, MM_surf_10000_phyloseq) #only samples that have these species will be kept
+speciesOTUtable <- lapply(speciesPhyseq,otu_table) #go through data and extract the information that matches that data
+speciesAvg <- lapply(speciesOTUtable,rowMeans) #what does each species contribute to the 100%? percent transformation
+pooledOTUtable = t(do.call(rbind,speciesAvg)) #Take the new average and bind it to original document
+#This is as far back as I could trace the x
+pooledOTUtable = data.frame(OTU=row.names(pooledOTUtable),pooledOTUtable) #converts data to a dataframe (note that this is subsetted!!)
+TT = tax_table(MM_surf_10000_phyloseq) #attaches taxonomy to those species
+TT = TT[, which(apply(!apply(TT, 2, is.na), 2, any))]
+tdf = data.frame(TT, OTU = taxa_names(MM_surf_10000_phyloseq)) #attaches OTUs to data frame
+pOTUtax = merge(pooledOTUtable, tdf, by.x = "OTU")
+pOTU = data.frame(pOTUtax,SeqTotal = rowSums(pOTUtax[,2:85])) #numbers show in which columns treatment data is located
+pOTU.phylum =pOTU[,c(2:85,1)] #need to change this and the above numbers manually. The 1 refers to the column of taxonomy data
+melt.phylum = melt(pOTU.phylum,id.vars="OTU") #melt all the OTUs that are one particular thing into a rank. Still has many observations for each OTU in each water mass
+colnames(melt.phylum)[2]="SampleID"
+agg.phylum=aggregate(.~OTU+SampleID,melt.phylum,sum) #Turns it into percentages
+agg.phylum$SampleID = gsub( "X", "", paste(agg.phylum$SampleID)) ##########THIS IS MY FIX!!!!!!#######################
+
+library(reshape2)
+data = dcast(agg.phylum, SampleID ~ OTU) #Rearrages so that each species has a column
+
+
+PhylumCount = data
+# Metadata = bmsd
+
+# write.csv(bmsd, file = "C://Users//Moana//Documents//Uni//2015//ECOL491//All data//data//bmsdMetadata.csv", row.names=FALSE)
+# write.csv(data, file = "C://Users//Moana//Documents//Uni//2015//ECOL491//All data//data//dataPhyla.csv", row.names=FALSE)
+
+Metadata = read.table("C://Users/Moana/Documents/Uni/2016/Publication/Data from Rachel/Ecotone_map.txt", header = TRUE)
+
+# PhylumCount = read.csv("C://Users//Moana//Documents//Uni//2015//ECOL491//All data//data//dataPhyla.csv", header = TRUE)
+
+NewDF <- merge(PhylumCount, Metadata, by="SampleID")#, all.x=TRUE, all.y=TRUE)
+# NewDF$Chlorophylla <- NULL
+# NewDF$BA <- NULL
+# NewDF$BP <- NULL
+# NewDF <- na.omit(NewDF)
+
+#write.csv(NewDF, file = "C://Users//Moana//Documents//Uni//2015//ECOL491//All data//data//NewOTUMetadatainclNA.csv", row.names=FALSE)
+
+
+PhylumCount2 = agg.phylum
+NewDF2 <- merge(PhylumCount2, Metadata, by="SampleID")#, all.x=TRUE, all.y=TRUE)
+# NewDF2$Chlorophylla <- NULL
+# NewDF2$BA <- NULL
+# NewDF2$BP <- NULL
+# NewDF2 <- na.omit(NewDF2)
+
+#write.csv(NewDF2, file = "C://Users//Moana//Documents//Uni//2015//ECOL491//All data//data//NewOTUMetadataLayout2inclNA.csv", row.names=FALSE)
+
+NewDF3 <- merge(NewDF2, tdf, by="OTU", all.x=TRUE, all.y=TRUE) #tdf adds all the other taxonomy
+#write.csv(NewDF3, file = "C:/Users/Moana/Documents/Uni/2016/Publication/paper/NewFulltaxonomyinclNA.csv", row.names=FALSE)
+
+
+```
