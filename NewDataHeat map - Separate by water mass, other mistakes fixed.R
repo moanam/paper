@@ -14,7 +14,7 @@ out.path = paste(file.path, "Output/", sep="")
 source(paste(file.path, "paper/fig2_v1_functions-4 replicates.R", sep=""))
 
 mydata = read.csv("C:/Users/Moana/Documents/Uni/2016/Publication/paper/NewFulltaxonomyinclNA.csv", header = T)
-tax = mydata[,c(1,34)]
+tax = mydata[,c(1,30)] #OTU, Order
 colnames(tax) = c("OTU", "Taxonomy")
 
 library(splitstackshape)
@@ -25,7 +25,7 @@ tax$Taxonomy_2 <- NULL
 tax$Taxonomy_3 <- NULL
 names(tax)[names(tax)=="Taxonomy_4"] <- "Taxonomy"
 
-map = mydata[,c(3,15,16,12)]
+map = mydata[,c(3,4,5,12)] #Value, barcode, link, time
 colnames(map) = c("Sample", "RevBarcode", "FwdBarcode", "Timepoint")
 
 ########################################################################################################################
@@ -40,7 +40,7 @@ reps = c("M1", "M2", "M3", "M4")
 for (i in 1:length(reps)){
   replicate = reps[i]
   temp = get(paste("dat.", replicate, sep=""))
-  temp.dat = temp[,c(1,3,12)]
+  temp.dat = temp[,c(1,3,12)] #OTU, value, time
   assign(paste("dat.", replicate, sep=""), temp.dat)
 }
 
