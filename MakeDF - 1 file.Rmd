@@ -4,7 +4,7 @@ rm(list=ls())
 library(phyloseq)
 library(ggplot2)
 
-otutable_biom_file <- paste("C:/Users/Moana/Documents/Uni/2016/Publication/Data from Rachel/", "1000_merged_otu_table_json.biom", sep = "")
+otutable_biom_file <- paste("C:/Users/Moana/Documents/Uni/2016/Publication/Data from Rachel/", "10000_merged_otu_table_json.biom", sep = "")
 map_file <- paste("C:/Users/Moana/Documents/Uni/2016/Publication/Data from Rachel/", "Ecotone_map.txt", sep = "")
 
 ```
@@ -151,7 +151,7 @@ NewDF <- merge(PhylumCount, Metadata, by="SampleID")#, all.x=TRUE, all.y=TRUE)
 # NewDF$BP <- NULL
 # NewDF <- na.omit(NewDF)
 
-#write.csv(NewDF, file = "C://Users//Moana//Documents//Uni//2015//ECOL491//All data//data//NewOTUMetadatainclNA.csv", row.names=FALSE)
+#write.csv(NewDF, file = "C://Users//Moana//Documents//Uni//2015//ECOL491//All data//data//NewOTUMetadatainclNA10000.csv", row.names=FALSE)
 
 
 PhylumCount2 = agg.phylum
@@ -161,10 +161,10 @@ NewDF2 <- merge(PhylumCount2, Metadata, by="SampleID")#, all.x=TRUE, all.y=TRUE)
 # NewDF2$BP <- NULL
 # NewDF2 <- na.omit(NewDF2)
 
-#write.csv(NewDF2, file = "C://Users//Moana//Documents//Uni//2015//ECOL491//All data//data//NewOTUMetadataLayout2inclNA.csv", row.names=FALSE)
+#write.csv(NewDF2, file = "C://Users//Moana//Documents//Uni//2015//ECOL491//All data//data//NewOTUMetadataLayout2inclNA10000.csv", row.names=FALSE)
 
 NewDF3 <- merge(NewDF2, tdf, by="OTU", all.x=TRUE, all.y=TRUE) #tdf adds all the other taxonomy
-#write.csv(NewDF3, file = "C:/Users/Moana/Documents/Uni/2016/Publication/paper/NewFulltaxonomyinclNA.csv", row.names=FALSE)
+#write.csv(NewDF3, file = "C:/Users/Moana/Documents/Uni/2016/Publication/paper/NewFulltaxonomyinclNA10000.csv", row.names=FALSE)
 
 
 ```
